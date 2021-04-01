@@ -16,20 +16,16 @@ export default {
       type: String,
       default: ''
     },
-    disabled: {
-      type: Boolean,
-      default: false
-    },
     plugins: {
       type: [String, Array],
       default: 'lists image media table textcolor ' +
-          'wordcount contextmenu wordcount preview textpattern help'
+          'wordcount contextmenu wordcount preview textpattern indent2em importword help'
     },
     toolbar: {
       type: [String, Array],
       default: 'undo redo |  formatselect fontsizeselect fontselect | bold italic | alignleft aligncenter ' +
           'alignright alignjustify | bullist numlist outdent indent | lists image ' +
-          'media table | removeformat wordcount preview help'
+          'media table | removeformat wordcount preview indent2em importword help'
     }
   },
   data() {

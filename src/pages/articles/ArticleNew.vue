@@ -13,8 +13,7 @@
     </a-row>
     <tinymce-editor
         ref="editor"
-        v-model="content"
-        :disabled="disabled">
+        v-model="content">
     </tinymce-editor>
   </div>
 </template>
@@ -29,15 +28,10 @@ export default {
   },
   data() {
     return {
-      content: 'Welcome to Use Tinymce Editor',
-      disabled: false
+      content: '',
     }
   },
   methods: {
-    //清空内容
-    clear() {
-
-    }
   }
 }
 </script>

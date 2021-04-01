@@ -5,7 +5,6 @@ import Cookie from 'js-cookie'
 const xsrfHeaderName = 'Authorization'
 
 axios.defaults.timeout = 5000
-axios.defaults.withCredentials= true
 axios.defaults.xsrfHeaderName= xsrfHeaderName
 axios.defaults.xsrfCookieName= xsrfHeaderName
 
@@ -24,38 +23,6 @@ const METHOD = {
   PUT: 'put',
   DELETE: 'delete'
 }
-
-// /**
-//  * axios请求
-//  * @param url 请求地址
-//  * @param method {METHOD} http method
-//  * @param params 请求参数
-//  * @returns {Promise<AxiosResponse<T>>}
-//  */
-// async function request(url, method, params, config) {
-//   switch (method) {
-//     case METHOD.GET:
-//       return axios.request({
-//         url: url,
-//         method:"get",
-//         params:params,
-//         ...config
-//       })
-//     case METHOD.POST:
-//       return axios.request({
-//         url: url,
-//         method: "post",
-//         data: params,
-//         ...config
-//       })
-//     case METHOD.PUT:
-//       return axios.put(url,params,config)
-//     case METHOD.DELETE:
-//       return axios.delete(url,{params,...config});
-//     default:
-//       return axios.get(url, {params, ...config})
-//   }
-// }
 
 const request = axios.create({
   timeout: 10000,

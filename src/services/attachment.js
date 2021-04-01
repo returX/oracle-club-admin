@@ -1,5 +1,5 @@
 import {request,METHOD} from "@/utils/request";
-import {UPLOAD,ATTACHMENTS} from "@/services/api"
+import {UPLOAD, ATTACHMENTS, UPLOADS} from "@/services/api"
 
 const attachmentApi = {}
 
@@ -7,6 +7,19 @@ attachmentApi.upload = (formData) => {
     return request({
         url:UPLOAD,
         method:METHOD.POST,
+        data:formData,
+    })
+}
+
+attachmentApi.uploads = (formData,handleProgress) => {
+    return request({
+        url:UPLOADS,
+        method:METHOD.POST,
+        onUploadProgress: (progressEvent)=>{
+            if (progressEvent.lengthComputable){
+                handleProgress && handleProgress(progressEvent)
+            }
+        },
         data:formData,
     })
 }

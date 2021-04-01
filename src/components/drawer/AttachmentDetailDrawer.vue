@@ -1,7 +1,7 @@
 <template>
   <a-drawer
       title="附件详情"
-      :width="540"
+      :width="480"
       :visible="visible"
       closable
       :body-style="{ paddingBottom: '80px' }"

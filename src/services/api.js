@@ -8,5 +8,6 @@ module.exports = {
   DEPARTMENTS: `${BASE_URL}/api/admin/departments`,
   USERS: `${BASE_URL}/api/admin/users`,
   UPLOAD: `${BASE_URL}/api/admin/attachments/upload`,
+  UPLOADS: `${BASE_URL}/api/admin/attachments/uploads`,
   ARTICLE: `${BASE_URL}/api/admin/articles`
 }

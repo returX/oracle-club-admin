@@ -253,22 +253,7 @@ export default {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 }
-.thumb{
-  width: 100%;
-  height: 120px;
-  background-color: #e9e9e9;
-  overflow: hidden;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  img{
-    width: auto;
-    height: auto;
-    max-width: 100%;
-    max-height: 100%;
-  }
-}
+
 .ant-card-meta{
   padding: 8px 4px;
 }

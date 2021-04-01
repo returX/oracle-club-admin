@@ -33,6 +33,8 @@ import 'tinymce/plugins/textcolor' //文字颜色
 import 'tinymce/plugins/preview' // 点击预览
 import 'tinymce/plugins/textpattern' //快速排版(markdown)
 import 'tinymce/plugins/help'
+import './utils/tinymce/plugins/indent2em'
+import './utils/tinymce/plugins/importword'
 import './utils/tinymce/langs/zh_CN.js'
 
 Vue.prototype.$tinymce = tinymce

@@ -139,7 +139,7 @@ export default {
       }
     }
     .admin-layout-main{
-      height: 100vh;
+      min-height: 100vh;
       .admin-header{
         top: 0;
         right: 0;

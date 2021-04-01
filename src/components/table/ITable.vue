@@ -7,6 +7,7 @@
       :rowKey="rowKey"
       :pagination="pagination"
       :dataSource="dataSource"
+      size="default"
       :expandedRowKeys="expandedRowKeys"
       :expandedRowRender="expandedRowRender"
       @change="onChange"
@@ -70,8 +71,10 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
+<style lang="less">
   .i-table{
-
+    table:not([cellpadding]) td, table:not([cellpadding]) th{
+      padding: 16px;
+    }
   }
 </style>

@@ -31,6 +31,7 @@
               >
                 <a-range-picker style="width: 100%"
                                 v-model="dateRange"
+                                @change="handleChangeDate"
                                 format="YYYY-MM-DD"/>
               </a-form-item>
             </a-col>
@@ -54,7 +55,7 @@
             <a @click="toggleAdvanced">
             {{advanced ? '收起' : '展开'}}
             <a-icon :type="advanced ? 'up' : 'down'" />
-          </a>
+            </a>
           </a-space>
         </span>
       </a-form>
@@ -66,27 +67,35 @@
           @click="()=> canChecked = true"
           v-if="!canChecked"
       >批量操作</a-button>
-        <a-popconfirm
-            title="确定要删除吗？"
-            ok-text="是"
-            cancel-text="否"
-            v-if="canChecked"
-            @confirm="handleDeleteArticleInBatch"
-        >
-          <a-button
-              type="danger"
-              icon="delete"
+        <template v-else>
+          <a-popconfirm
+              title="确定要删除吗？"
+              ok-text="是"
+              cancel-text="否"
+              @confirm="handleDeleteArticleInBatch"
           >
-            删除
+            <a-button
+                type="danger"
+                icon="delete"
+            >
+              删除
+            </a-button>
+          </a-popconfirm>
+          <a-dropdown>
+            <a-menu slot="overlay"  @click="handleMenuClick">
+              <a-menu-item key="1">
+                移入回收站
+              </a-menu-item>
+            </a-menu>
+            <a-button> 更多操作 <a-icon type="down" /> </a-button>
+          </a-dropdown>
+          <a-button
+              icon="close"
+              @click="handleCancelSelection"
+          >
+            取消
           </a-button>
-        </a-popconfirm>
-        <a-button
-            icon="close"
-            v-if="canChecked"
-            @click="handleCancelSelection"
-        >
-          取消
-        </a-button>
+        </template>
       </a-space>
       <i-table
           :columns="columns"
@@ -123,26 +132,60 @@
 
         <div slot="action" slot-scope="{text, record}">
           <a-space>
-            <a>
-              <a-icon type="edit"/>编辑
-            </a>
-            <a @click="handleDeleteArticleOne(record.key)">
-              <a-icon type="delete" />删除
+            <template v-if="record.status !== 'DELETED'">
+              <a>
+                <a-icon type="edit"/>编辑
+              </a>
+              <a-popconfirm
+                  title="确定将该新闻稿移至回收站?"
+                  @confirm="handleEditStatusClick(record,'DELETED')">
+                  <a>
+                    <a-icon type="delete" />回收站
+                  </a>
+              </a-popconfirm>
+            </template>
+            <template v-else>
+              <a-popconfirm
+                title="确定要发布新闻稿?"
+                @confirm="handleEditStatusClick(record,'PUBLISHED')"
+              >
+                <a>
+                  <a-icon type="redo"/>还原
+                </a>
+              </a-popconfirm>
+
+              <a-popconfirm
+                  title="确定删除该新闻稿?(一经删除将无法恢复)"
+                  @confirm="handleRemoveArticle(record.id)">
+                <a>
+                  <a-icon type="delete" />删除
+                </a>
+              </a-popconfirm>
+            </template>
+            <a @click="handleOpenSetting(record)">
+              设置
             </a>
           </a-space>
         </div>
 
         <p slot="expandedRowRender" slot-scope="{record}" style="margin: 0">
-          概述：{{ record.description }}
+          摘要：{{ record.description }}
         </p>
       </i-table>
     </div>
+    <article-setting-drawer
+        :article="selectedArticle"
+        v-model="drawerVisible"
+    />
   </a-card>
 </template>
 
 <script>
+import moment from 'moment';
 import ITable from "@/components/table/ITable";
 import articleApi from "@/services/artcle";
+import ArticleSettingDrawer from "@/components/drawer/ArticleSettingDrawer";
+import {articleStatus} from "@/utils/constants";
 
 const columns = [
   {
@@ -184,7 +227,7 @@ const columns = [
 
 export default {
   name: "ArticleSelect",
-  components: {ITable},
+  components: {ArticleSettingDrawer, ITable},
   data () {
     return {
       advanced: false,
@@ -194,6 +237,8 @@ export default {
       canChecked: false,
       dateRange:null,
       loading: false,
+      drawerVisible: false,
+      selectedArticle: {},
       pagination: {
         page: 1,
         size: 10,
@@ -217,7 +262,23 @@ export default {
     this.handleListArticle()
   },
   methods: {
-    handleDeleteArticleOne(id) {
+    handleOpenSetting(record){
+      this.selectedArticle = record
+      this.drawerVisible = true
+    },
+    handleEditStatusClick(record,status){
+      record.status = status
+      this.loading = true
+      articleApi.update(record).then(resp=>{
+        if (resp.data.result ==='ok'){
+          console.log(resp)
+          this.$message.success("删除文章成功")
+        }
+        this.loading = false
+        this.handleListArticle()
+      })
+    },
+    handleRemoveArticle(id){
       this.loading = true
       articleApi.delete(id).then(resp=>{
         console.log(resp.data)
@@ -227,6 +288,25 @@ export default {
         this.loading = false
         this.handleListArticle()
       })
+    },
+    handleMenuClick({key}){
+      //批量移入回收站
+      this.loading = true
+      if (key === "1"){
+        articleApi.updateStatus(this.selectedIds,articleStatus.DELETED).then(resp=>{
+          if (resp.data.result === "ok"){
+            console.log(resp.data)
+            this.$message.success("批量移入回收站成功")
+          }
+          this.loading = false
+          this.canChecked = false
+          this.handleListArticle()
+        })
+      }
+    },
+    handleChangeDate([start,end]){
+      this.queryParams.createdStart = moment(start).unix() * 1000
+      this.queryParams.createdEnd = moment(end).unix() * 1000
     },
     toggleAdvanced() {
       this.advanced = !this.advanced
@@ -246,6 +326,7 @@ export default {
     },
     handleResetForm(){
       this.queryParams = {}
+      this.dateRange = null
       this.handlePaginationChange(1,10)
     },
     handlePaginationChange(page,size){
@@ -272,10 +353,6 @@ export default {
       this.loading = true
       this.queryParams.size = this.pagination.size
       this.queryParams.page = this.pagination.page - 1
-      if (this.dateRange){
-        this.queryParams.createdStart = new Date(this.dateRange[0]._d).getTime()
-        this.queryParams.createdEnd = new Date(this.dateRange[1]._d).getTime()
-      }
       articleApi.list(this.queryParams).then(resp=>{
         if (resp.data.result === "ok"){
           const {data} = resp.data
@@ -284,6 +361,11 @@ export default {
         }
         this.loading = false
       })
+    }
+  },
+  computed:{
+    selectedIds(){
+      return this.selectedRows.map(item => item.id)
     }
   }
 }
