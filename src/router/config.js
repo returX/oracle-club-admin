@@ -63,7 +63,12 @@ const options = {
             {
               path: 'new',
               name: '新闻稿上传',
-              component: ()=> import('@/pages/articles/ArticleNew')
+              component: ()=> import('@/pages/articles/ArticleNew'),
+              meta: {
+                page: {
+                  cacheAble: false
+                }
+              }
             },
           ]
         },
@@ -218,26 +223,6 @@ const options = {
                   component: () => import('@/pages/list/search/ProjectList'),
                 }
               ]
-            }
-          ]
-        },
-        {
-          path: 'details',
-          name: '详情页',
-          meta: {
-            icon: 'profile'
-          },
-          component: BlankView,
-          children: [
-            {
-              path: 'basic',
-              name: '基础详情页',
-              component: () => import('@/pages/detail/BasicDetail')
-            },
-            {
-              path: 'advance',
-              name: '高级详情页',
-              component: () => import('@/pages/detail/AdvancedDetail')
             }
           ]
         },

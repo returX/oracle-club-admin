@@ -26,7 +26,7 @@
                           :auto-size="{ minRows: 7, maxRows: 10 }"
               />
               <a-form-item
-                  label="创建时间："
+                  label="发布时间："
               >
                 <a-date-picker show-time
                                @ok="onOk"
@@ -62,15 +62,28 @@
       </div>
       <a-divider/>
       <div class="bottom-control">
-        <ReactiveButton
-            @click="handleSave"
-            @callback="handleSavedCallback"
-            :loading="saving"
-            :errored="savedErrored"
-            text="保存"
-            loadedText="保存成功"
-            erroredText="保存失败"
-        ></ReactiveButton>
+        <a-space>
+          <ReactiveButton
+              type="danger"
+              v-if="saveDraftButton"
+              @click="handleDraftClick"
+              @callback="handleSavedCallback"
+              :loading="draftSaving"
+              :errored="draftSavedErrored"
+              text="保存草稿"
+              loadedText="保存成功"
+              erroredText="保存失败"
+          ></ReactiveButton>
+          <ReactiveButton
+              @click="handleSave"
+              @callback="handleSavedCallback"
+              :loading="saving"
+              :errored="savedErrored"
+              :text="`${selectArticle.id?'保存':'发布'}`"
+              :loadedText="`${selectArticle.id?'保存':'发布'}成功`"
+              :erroredText="`${selectArticle.id?'保存':'发布'}失败`"
+          ></ReactiveButton>
+        </a-space>
       </div>
     </div>
     <attachment-select-drawer
@@ -86,6 +99,8 @@ import moment from 'moment'
 import AttachmentSelectDrawer from "@/components/drawer/AttachmentSelectDrawer";
 import ReactiveButton from "@/components/button/ReactiveButton";
 import articleApi from "@/services/artcle";
+import {articleStatus} from "@/utils/constants";
+import {mapGetters} from "vuex";
 
 export default {
   name: "ArticleSettingDrawer",
@@ -99,7 +114,12 @@ export default {
       type: Boolean,
       required:false,
       default: true
-    }
+    },
+    saveDraftButton: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   model: {
     prop: 'visible',
@@ -112,18 +132,23 @@ export default {
       imageDrawerVisible: false,
       saving: false,
       savedErrored: false,
+      draftSaving: false,
+      draftSavedErrored: false,
     }
   },
   watch:{
     article(val){
       this.selectArticle = val
-      this.createdAt = moment(val.createdAt).format()
+      this.createdAt = moment(val.createdAt)
     }
+  },
+  computed:{
+    ...mapGetters('account',['user'])
   },
   methods:{
     onOk(value) {
       if (value){
-        this.createdAt = moment(value).format()
+        this.createdAt = moment(value)
         this.selectArticle.createdAt = value.unix() * 1000
       }
     },
@@ -134,23 +159,57 @@ export default {
       this.selectArticle.coverImage = item.path
       this.imageDrawerVisible = false
     },
-    handleSave(){
+    createOrUpdateArticle(){
+      if (!this.selectArticle.title) {
+        this.$notification['error']({
+          message: '提示',
+          description: '文章标题不能为空！',
+        })
+        return
+      }
+
+      this.selectArticle.author = this.user.name
+
       this.saving = true
-      articleApi.update(this.selectArticle).then(resp=>{
-        if (resp.data.result === "ok"){
-          this.selectArticle = resp.data.data
-        }else {
-          this.savedErrored = true
-        }
-      }).finally(()=>{
-        setTimeout(() => {
-          this.saving = false
-        }, 400)
-      })
+      if (this.selectArticle.id){
+        articleApi.update(this.selectArticle).then(resp=>{
+          if (resp.data.result === "ok"){
+            this.selectArticle = resp.data.data
+          }else {
+            this.savedErrored = true
+          }
+        }).finally(()=>{
+          setTimeout(() => {
+            this.saving = false
+          }, 400)
+        })
+      }else {
+        articleApi.create(this.selectArticle).then(resp=>{
+          if (resp.data.result === "ok"){
+            this.selectArticle = resp.data.data
+          }else {
+            this.savedErrored = true
+          }
+        }).finally(()=>{
+          setTimeout(() => {
+            this.saving = false
+          }, 400)
+        })
+      }
+    },
+    handleDraftClick(){
+      this.selectArticle.status = articleStatus.UNPUBLISHED
+      this.createOrUpdateArticle()
+    },
+    handleSave(){
+      this.selectArticle.status = articleStatus.PUBLISHED
+      this.createOrUpdateArticle()
     },
     handleSavedCallback(){
       if (this.savedErrored){
         this.savedErrored = false
+      }else {
+        this.$router.push("select")
       }
     }
   }

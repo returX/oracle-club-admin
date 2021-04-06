@@ -5,7 +5,7 @@
         <img alt="logo" class="logo" src="@/assets/img/logo.png" />
         <span class="title">{{systemName}}</span>
       </div>
-      <div class="desc">Ant Design 是西湖区最具影响力的 Web 设计规范</div>
+      <div class="desc">Oracle Club后台管理系统</div>
     </div>
     <div class="login">
       <a-form @submit="onSubmit" :form="form">
@@ -16,7 +16,7 @@
               <a-input
                 autocomplete="autocomplete"
                 size="large"
-                placeholder="admin"
+                placeholder="543851436@qq.com"
                 v-decorator="['email', {rules: [{ required: true, message: '请输入邮箱', whitespace: true}]}]"
               >
                 <a-icon slot="prefix" type="user" />
@@ -121,6 +121,7 @@ export default {
         this.$message.success(loginRes.msg, 3)
       } else {
         this.error = loginRes.msg
+        this.$message.error(loginRes.msg, 3)
       }
     }
   }

@@ -45,4 +45,19 @@ articleApi.updateStatus = (ids,status) => {
     })
 }
 
+articleApi.get = id =>{
+    return request({
+        url: `${ARTICLE}/${id}`,
+        method:METHOD.GET
+    })
+}
+
+articleApi.create = data =>{
+    return request({
+        url: ARTICLE,
+        method: METHOD.POST,
+        data: data
+    })
+}
+
 export default articleApi

@@ -133,7 +133,7 @@
         <div slot="action" slot-scope="{text, record}">
           <a-space>
             <template v-if="record.status !== 'DELETED'">
-              <a>
+              <a @click="handleToEdit(record)">
                 <a-icon type="edit"/>编辑
               </a>
               <a-popconfirm
@@ -272,11 +272,13 @@ export default {
       articleApi.update(record).then(resp=>{
         if (resp.data.result ==='ok'){
           console.log(resp)
-          this.$message.success("删除文章成功")
         }
         this.loading = false
         this.handleListArticle()
       })
+    },
+    handleToEdit(record){
+      this.$router.push({name:'新闻稿上传',query:{id: record.id}})
     },
     handleRemoveArticle(id){
       this.loading = true

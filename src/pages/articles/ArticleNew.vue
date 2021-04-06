@@ -2,36 +2,100 @@
   <div>
     <a-row type="flex" justify="space-around" style="margin-bottom: 20px">
       <a-col :flex="21">
-        <a-input placeholder="输入标题" />
+        <a-input v-model="articleDetail.title" placeholder="输入标题" />
       </a-col>
       <a-col>
         <a-button-group>
-          <a-button type="primary">发布文章</a-button>
-          <a-button type="danger">保存草稿</a-button>
+          <a-button type="primary"
+                    @click="articleSettingVisiable = true">发布文章</a-button>
+          <ReactiveButton
+              type="danger"
+              text="保存草稿"
+              loadedText="保存成功"
+              erroredText="保存失败"
+              :loading="draftSaving"
+              :errored="draftSaveError"
+              @click="handleSaveDraft"
+              @callback="handleErrorSaveDraft"
+          />
         </a-button-group>
       </a-col>
     </a-row>
     <tinymce-editor
         ref="editor"
-        v-model="content">
+        :content="articleDetail.content"
+        @contentChange="handleContentChange"
+    >
     </tinymce-editor>
+    <article-setting-drawer
+        :article="articleDetail"
+        :save-draft-button="false"
+        v-model="articleSettingVisiable"
+    />
   </div>
 </template>
 
 <script>
 import TinymceEditor from "@/components/TinymceEditor";
+import articleApi from "@/services/artcle";
+import ReactiveButton from "@/components/button/ReactiveButton";
+import ArticleSettingDrawer from "@/components/drawer/ArticleSettingDrawer";
 
 export default {
   name: "ArticleNew",
   components:{
+    ArticleSettingDrawer,
+    ReactiveButton,
     TinymceEditor
   },
   data() {
     return {
-      content: '',
+      articleDetail: {},
+      content: '<p>Hello World(X)    Hello TinyMCE(√) //todo 为图片库添加一个字段，用来区分 封面大图、轮播图、教师、瀑布流</p>',
+      draftSaveError: false,
+      draftSaving: false,
+      articleSettingVisiable: false
+    }
+  },
+  mounted() {
+    const id = this.$route.query.id
+    if (id){
+      articleApi.get(id).then(resp=>{
+        if (resp.data.result === "ok"){
+          const article = resp.data.data
+          this.articleDetail = article
+        }
+      })
     }
   },
   methods: {
+    handleContentChange(content){
+      this.articleDetail.content = content
+    },
+    handleErrorSaveDraft(){
+      if (this.savedErrored){
+        this.savedErrored = false
+      }
+    },
+    handleSaveDraft(){
+      this.draftSaving = true
+      if (this.articleDetail.id){
+        //更新
+        articleApi.update(this.articleDetail).then(resp=>{
+          if (resp.data.result === "ok"){
+            this.articleDetail = resp.data.data
+          }
+        }).finally(()=>setTimeout(()=>this.draftSaving = false,1000))
+      }else {
+        //新建
+        articleApi.create(this.articleDetail).then(resp=>{
+          if (resp.data.result === "ok"){
+            this.articleDetail = resp.data.data
+          }
+        }).finally(()=>setTimeout(()=>this.draftSaving = false,1000))
+      }
+
+    }
   }
 }
 </script>

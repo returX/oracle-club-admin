@@ -2,7 +2,8 @@
   <div>
     <vue-tinymce
         :setting="setting"
-        v-model="content"
+        v-model="contentData"
+        :setup="setup"
     />
   </div>
 </template>
@@ -12,9 +13,8 @@ import {METHOD, request} from "@/utils/request";
 
 export default {
   props: {
-    value: {
+    content: {
       type: String,
-      default: ''
     },
     plugins: {
       type: [String, Array],
@@ -30,7 +30,7 @@ export default {
   },
   data() {
     return {
-      content: "<p>Hello World(X)    Hello TinyMCE(√) //todo 为图片库添加一个字段，用来区分 封面大图、轮播图、教师、瀑布流</p>",
+      contentData: '',
       setting:{
         height: 500,
         language: 'zh_CN',
@@ -61,14 +61,20 @@ export default {
     }
   },
   methods: {
+    setup(editor){
+      console.log(editor)
+    }
   },
   watch: {
     content:{
-      handler: function (newValue) {
-        this.$emit('input', newValue)
+      handler:function (newValue){
+        this.contentData = newValue
       },
       immediate: true
     },
+    contentData(newValue){
+      this.$emit("contentChange",newValue)
+    }
   }
 }
 </script>

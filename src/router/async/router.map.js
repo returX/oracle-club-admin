@@ -87,21 +87,6 @@ const routerMap = {
     name: '项目',
     component: () => import('@/pages/list/search/ProjectList')
   },
-  details: {
-    name: '详情页',
-    icon: 'profile',
-    component: view.blank
-  },
-  basicDetails: {
-    path: 'basic',
-    name: '基础详情页',
-    component: () => import('@/pages/detail/BasicDetail')
-  },
-  advanceDetails: {
-    path: 'advance',
-    name: '高级详情页',
-    component: () => import('@/pages/detail/AdvancedDetail')
-  },
   result: {
     name: '结果页',
     icon: 'check-circle-o',
