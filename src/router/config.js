@@ -10,12 +10,6 @@ const options = {
       name: '登录页',
       component: () => import('@/pages/login')
     },
-
-    {
-      path: '/403',
-      name: '403',
-      component: () => import('@/pages/exception/403'),
-    },
     {
       path: '/',
       name: '首页',
@@ -134,7 +128,7 @@ const options = {
           path: 'attachments',
           name: '附件',
           meta: {
-            icon: 'file-image',
+            icon: 'file',
           },
           component: PageView,
           children: [
@@ -149,163 +143,23 @@ const options = {
           ]
         },
         {
-          path: 'form',
-          name: '表单页',
+          path: 'image',
+          name: '图片管理',
           meta: {
-            icon: 'form',
-            page: {
-              cacheAble: false
-            }
+            icon: 'file-image',
           },
           component: PageView,
           children: [
             {
-              path: 'basic',
-              name: '基础表单',
-              component: () => import('@/pages/form/basic'),
-            },
-            {
-              path: 'step',
-              name: '分步表单',
-              component: () => import('@/pages/form/step'),
-            },
-            {
-              path: 'advance',
-              name: '高级表单',
-              component: () => import('@/pages/form/advance'),
+              path:"imageIndex",
+              name: '首页图片管理',
+              component:() =>import('@/pages/image/IndexImageManagement')
+            },{
+              path:"imageWall",
+              name: '照片墙管理',
+              component:() =>import('@/pages/image/ImageWallManagement')
             }
           ]
-        },
-        {
-          path: 'list',
-          name: '列表页',
-          meta: {
-            icon: 'table'
-          },
-          component: PageView,
-          children: [
-            {
-              path: 'query',
-              name: '查询表格',
-              meta: {
-                authority: 'queryForm',
-              },
-              component: () => import('@/pages/list/QueryList'),
-            },
-            {
-              path: 'primary',
-              name: '标准列表',
-              component: () => import('@/pages/list/StandardList'),
-            },
-            {
-              path: 'card',
-              name: '卡片列表',
-              component: () => import('@/pages/list/CardList'),
-            },
-            {
-              path: 'search',
-              name: '搜索列表',
-              component: () => import('@/pages/list/search/SearchLayout'),
-              children: [
-                {
-                  path: 'article',
-                  name: '文章',
-                  component: () => import('@/pages/list/search/ArticleList'),
-                },
-                {
-                  path: 'application',
-                  name: '应用',
-                  component: () => import('@/pages/list/search/ApplicationList'),
-                },
-                {
-                  path: 'project',
-                  name: '项目',
-                  component: () => import('@/pages/list/search/ProjectList'),
-                }
-              ]
-            }
-          ]
-        },
-        {
-          path: 'result',
-          name: '结果页',
-          meta: {
-            icon: 'check-circle-o',
-          },
-          component: PageView,
-          children: [
-            {
-              path: 'success',
-              name: '成功',
-              component: () => import('@/pages/result/Success')
-            },
-            {
-              path: 'error',
-              name: '失败',
-              component: () => import('@/pages/result/Error')
-            }
-          ]
-        },
-        {
-          path: 'exception',
-          name: '异常页',
-          meta: {
-            icon: 'warning',
-          },
-          component: BlankView,
-          children: [
-            {
-              path: '404',
-              name: 'Exp404',
-              component: () => import('@/pages/exception/404')
-            },
-            {
-              path: '403',
-              name: 'Exp403',
-              component: () => import('@/pages/exception/403')
-            },
-            {
-              path: '500',
-              name: 'Exp500',
-              component: () => import('@/pages/exception/500')
-            }
-          ]
-        },
-        {
-          path: 'components',
-          name: '内置组件',
-          meta: {
-            icon: 'appstore-o'
-          },
-          component: PageView,
-          children: [
-            {
-              path: 'taskCard',
-              name: '任务卡片',
-              component: () => import('@/pages/components/TaskCard')
-            },
-            {
-              path: 'palette',
-              name: '颜色复选框',
-              component: () => import('@/pages/components/Palette')
-            },
-            {
-              path: 'table',
-              name: '高级表格',
-              component: () => import('@/pages/components/table')
-            }
-          ]
-        },
-        {
-          name: '验权表单',
-          path: 'auth/form',
-          meta: {
-            icon: 'file-excel',
-            authority: {
-              permission: 'form'
-            }
-          },
-          component: () => import('@/pages/form/basic')
         }
       ]
     },

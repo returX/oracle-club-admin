@@ -31,6 +31,8 @@ export default {
   data() {
     return {
       contentData: '',
+      editor: null,
+      ready: false,
       setting:{
         height: 500,
         language: 'zh_CN',
@@ -60,9 +62,15 @@ export default {
       }
     }
   },
+  mounted() {
+  },
   methods: {
     setup(editor){
-      console.log(editor)
+      this.editor = editor
+      // editor.on('input change undo redo execCommand KeyUp', function() {
+      //   that.$emit('contentChange', that.editor.getContent(), that.editor.getContent({format:'text'}));
+      // })
+      // that.$emit('contentChange', that.editor.getContent(), that.editor.getContent({format:'text'}));
     }
   },
   watch: {

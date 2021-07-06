@@ -61,7 +61,9 @@
                 :hoverable="true">
               <div class="thumb">
                 <span v-show="handleShowPreview(item)">该格式不支持预览</span>
-                <img :src="item.thumbPath"
+                <img
+                    v-show="!handleShowPreview(item)"
+                    :src="item.thumbPath"
                      :alt="item.name"
                      loading="lazy"
                 >
@@ -133,7 +135,7 @@ export default {
       selectedAttachmentsId: [],
       supportMultipleSelection : false,
       uploadVisible: false,
-      uploadHandler: attachmentApi.upload,
+      uploadHandler: attachmentApi.uploads,
       pagination: {
         page: 1,
         size: 18,
@@ -155,8 +157,11 @@ export default {
   },
   methods:{
     handleShowPreview(attachment){
-      console.log(attachment)
-      return false
+      const {mediaType} = attachment
+      if (mediaType.startsWith('image')){
+        return false
+      }
+      return true
     },
     handleListAttachments(){
       this.listLoading = true
@@ -165,7 +170,6 @@ export default {
       this.queryParam.sort = this.pagination.sort
       attachmentApi.list(this.queryParam)
         .then(resp=>{
-          console.log(resp)
           this.attachments = resp.data.data.content
           this.pagination.total = resp.data.data.totalElements
         }).finally(()=>{

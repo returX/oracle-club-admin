@@ -7,7 +7,7 @@
       <a-col>
         <a-button-group>
           <a-button type="primary"
-                    @click="articleSettingVisiable = true">发布文章</a-button>
+                    @click="articleSettingVisible = true">发布文章</a-button>
           <ReactiveButton
               type="danger"
               text="保存草稿"
@@ -30,7 +30,7 @@
     <article-setting-drawer
         :article="articleDetail"
         :save-draft-button="false"
-        v-model="articleSettingVisiable"
+        v-model="articleSettingVisible"
     />
   </div>
 </template>
@@ -40,6 +40,16 @@ import TinymceEditor from "@/components/TinymceEditor";
 import articleApi from "@/services/artcle";
 import ReactiveButton from "@/components/button/ReactiveButton";
 import ArticleSettingDrawer from "@/components/drawer/ArticleSettingDrawer";
+import {articleStatus} from "@/utils/constants";
+
+function getText(html){
+  const reg = /<(\S*?)[^>]*>.*?|<.*? \/>|\r\n|\r|\n|/g
+  const htmlChar = { 'lt': '<', 'gt': '>', 'nbsp': ' ', 'amp': '&', 'quot': '"', 'ldquo': '“', 'rdquo': '”' };
+  let content = html.replace(reg,'').replace(/&(lt|gt|nbsp|amp|quot|ldquo|rdquo);/ig,function (match,q){
+    return htmlChar[q]
+  })
+  return content
+}
 
 export default {
   name: "ArticleNew",
@@ -54,7 +64,7 @@ export default {
       content: '<p>Hello World(X)    Hello TinyMCE(√) //todo 为图片库添加一个字段，用来区分 封面大图、轮播图、教师、瀑布流</p>',
       draftSaveError: false,
       draftSaving: false,
-      articleSettingVisiable: false
+      articleSettingVisible: false
     }
   },
   mounted() {
@@ -62,8 +72,7 @@ export default {
     if (id){
       articleApi.get(id).then(resp=>{
         if (resp.data.result === "ok"){
-          const article = resp.data.data
-          this.articleDetail = article
+          this.articleDetail = resp.data.data
         }
       })
     }
@@ -71,6 +80,7 @@ export default {
   methods: {
     handleContentChange(content){
       this.articleDetail.content = content
+      this.articleDetail.contentText = getText(content)
     },
     handleErrorSaveDraft(){
       if (this.savedErrored){
@@ -79,6 +89,7 @@ export default {
     },
     handleSaveDraft(){
       this.draftSaving = true
+      this.articleDetail.status = articleStatus.UNPUBLISHED
       if (this.articleDetail.id){
         //更新
         articleApi.update(this.articleDetail).then(resp=>{

@@ -1,4 +1,24 @@
-import Cookie from 'js-cookie'
+import {METHOD, removeAuthorization, request, xsrfHeaderName} from "@/utils/request";
+import {REFRESH_TOKEN} from "@/services/api";
+
+
+
+// 是否正在刷新的标记
+let isRefreshing = false
+
+let retryRequests = [];
+function onAccessTokenFetched() {
+  retryRequests.forEach((callback)=>{
+    callback();
+  })
+  retryRequests = [];
+}
+
+function addRequestQueue(callback) {
+  retryRequests.push(callback)
+}
+
+
 // 401拦截
 const resp401 = {
   /**
@@ -21,10 +41,41 @@ const resp401 = {
    * @returns {Promise<never>}
    */
   onRejected(error, options) {
-    const {message} = options
-    const {response} = error
+    const {message,router} = options
+    const {response,config} = error
+    console.log(config)
     if (response.status === 401) {
-      message.error('无此权限')
+      const {result} = response.data
+      //refreshToken过期
+      if (result === "refreshToken failed"){
+        message.warn('登录已失效，请重新登录')
+        removeAuthorization()
+        router.push("/login")
+        return Promise.reject(error)
+      }
+      //阻塞批量请求，直到新的token更新
+      if (!isRefreshing){
+        isRefreshing = true
+        request({
+          url: REFRESH_TOKEN,
+          method: METHOD.POST,
+          params: {refresh_token: localStorage.getItem("refresh_token")}
+        }).then(resp=>{
+          if (resp.data.result === "ok"){
+            localStorage.setItem(xsrfHeaderName,'Bearer ' + resp.data.data.newToken)
+          }
+          isRefreshing = false
+          //执行队列中缓存的请求
+          onAccessTokenFetched()
+        })
+      }
+      //缓存请求
+      return new Promise((resolve => {
+        addRequestQueue(()=>{
+            resolve(request(config))
+          })
+      }))
+      //todo 服务器返回401响应码之后，浏览器刷新token并重新请求(? 可能拿回的数据也没用) 拦截router？
     }
     return Promise.reject(error)
   }
@@ -57,9 +108,13 @@ const reqCommon = {
    */
   onFulfilled(config, options) {
     const {message} = options
-    const {url, xsrfCookieName} = config
-    if (url.indexOf('login') === -1 && xsrfCookieName && !Cookie.get(xsrfCookieName)) {
+    const {url, xsrfHeaderName} = config
+    console.log(config)
+    if (url.indexOf('login') === -1 && xsrfHeaderName && !localStorage.getItem(xsrfHeaderName)) {
       message.warning('认证 token 已过期，请重新登录')
+    }
+    if (localStorage.getItem(xsrfHeaderName)){
+      config.headers.Authorization = localStorage.getItem(xsrfHeaderName)
     }
     return config
   },
@@ -71,6 +126,7 @@ const reqCommon = {
    */
   onRejected(error, options) {
     const {message} = options
+    console.log(error)
     message.error(error.message)
     return Promise.reject(error)
   }

@@ -101,6 +101,7 @@ import ReactiveButton from "@/components/button/ReactiveButton";
 import articleApi from "@/services/artcle";
 import {articleStatus} from "@/utils/constants";
 import {mapGetters} from "vuex";
+import {describe} from "@/utils/util";
 
 export default {
   name: "ArticleSettingDrawer",
@@ -139,8 +140,11 @@ export default {
   watch:{
     article(val){
       this.selectArticle = val
+      if (!this.selectArticle.description){
+        this.article.description = describe(this.selectArticle.contentText)
+      }
       this.createdAt = moment(val.createdAt)
-    }
+    },
   },
   computed:{
     ...mapGetters('account',['user'])

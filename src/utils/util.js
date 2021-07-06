@@ -33,3 +33,20 @@ export function enquireScreen(call) {
 }
 
 const _toString = Object.prototype.toString
+
+
+export function isImage(mediaType) {
+  const [media,type] = mediaType.split("/")
+  if (media !== 'image'){
+    return false
+  }
+  return ['png', 'jpg', 'jpeg', 'bmp', 'gif', 'webp', 'psd', 'svg', 'tiff'].indexOf(type.toLowerCase()) !== -1;
+}
+
+//获取原文本中的一部分文本
+export function describe(content,size = 200) {
+  if (content?.length > size){
+    return content.substring(0,size)
+  }
+  return content
+}

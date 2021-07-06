@@ -1,10 +1,10 @@
 import axios from 'axios'
-import Cookie from 'js-cookie'
 
 // 跨域认证信息 header 名
-const xsrfHeaderName = 'Authorization'
+export const xsrfHeaderName = 'Authorization'
 
 axios.defaults.timeout = 5000
+axios.defaults.withCredentials = true
 axios.defaults.xsrfHeaderName= xsrfHeaderName
 axios.defaults.xsrfCookieName= xsrfHeaderName
 
@@ -12,8 +12,6 @@ axios.defaults.xsrfCookieName= xsrfHeaderName
 const AUTH_TYPE = {
   BEARER: 'Bearer',
   BASIC: 'basic',
-  AUTH1: 'auth1',
-  AUTH2: 'auth2',
 }
 
 // http method
@@ -24,8 +22,9 @@ const METHOD = {
   DELETE: 'delete'
 }
 
-const request = axios.create({
+const http = axios.create({
   timeout: 10000,
+  baseURL: process.env.VUE_APP_API_BASE_URL,
 })
 
 /**
@@ -36,11 +35,10 @@ const request = axios.create({
 function setAuthorization(auth, authType = AUTH_TYPE.BEARER) {
   switch (authType) {
     case AUTH_TYPE.BEARER:
-      Cookie.set(xsrfHeaderName, 'Bearer ' + auth.token, {expires: auth.expireAt})
+      localStorage.setItem("refresh_token",auth.refreshToken)
+      localStorage.setItem(xsrfHeaderName,'Bearer ' + auth.token)
       break
     case AUTH_TYPE.BASIC:
-    case AUTH_TYPE.AUTH1:
-    case AUTH_TYPE.AUTH2:
     default:
       break
   }
@@ -53,11 +51,10 @@ function setAuthorization(auth, authType = AUTH_TYPE.BEARER) {
 function removeAuthorization(authType = AUTH_TYPE.BEARER) {
   switch (authType) {
     case AUTH_TYPE.BEARER:
-      Cookie.remove(xsrfHeaderName)
+      localStorage.removeItem(xsrfHeaderName)
+      localStorage.removeItem("refresh_token")
       break
     case AUTH_TYPE.BASIC:
-    case AUTH_TYPE.AUTH1:
-    case AUTH_TYPE.AUTH2:
     default:
       break
   }
@@ -71,13 +68,11 @@ function removeAuthorization(authType = AUTH_TYPE.BEARER) {
 function checkAuthorization(authType = AUTH_TYPE.BEARER) {
   switch (authType) {
     case AUTH_TYPE.BEARER:
-      if (Cookie.get(xsrfHeaderName)) {
+      if (localStorage.getItem(xsrfHeaderName)) {
         return true
       }
       break
     case AUTH_TYPE.BASIC:
-    case AUTH_TYPE.AUTH1:
-    case AUTH_TYPE.AUTH2:
     default:
       break
   }
@@ -100,7 +95,7 @@ function loadInterceptors(interceptors, options) {
     if (!onRejected || typeof onRejected !== 'function') {
       onRejected = error => Promise.reject(error)
     }
-    axios.interceptors.request.use(
+    http.interceptors.request.use(
       config => onFulfilled(config, options),
       error => onRejected(error, options)
     )
@@ -114,7 +109,7 @@ function loadInterceptors(interceptors, options) {
     if (!onRejected || typeof onRejected !== 'function') {
       onRejected = error => Promise.reject(error)
     }
-    axios.interceptors.response.use(
+    http.interceptors.response.use(
       response => onFulfilled(response, options),
       error => onRejected(error, options)
     )
@@ -146,7 +141,7 @@ function parseUrlParams(url) {
 export {
   METHOD,
   AUTH_TYPE,
-  request,
+  http as request,
   setAuthorization,
   removeAuthorization,
   checkAuthorization,

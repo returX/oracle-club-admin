@@ -45,8 +45,8 @@ export default {
       this.fileList = [...this.fileList, file];
       return false;
     },
-    handleFileChange(e,event){
-      console.log(e,event)
+    handleFileChange(e){
+      this.$emit('change',e)
     },
     handleRemoveFile(file){
       const index = this.fileList.indexOf(file);

@@ -111,11 +111,11 @@ export default {
       this.logging = false
       const loginRes = res.data
       if (loginRes.result === "ok") {
-        const {role} = loginRes.data
+        const {role,token} = loginRes.data
         this.setUser(loginRes.data)
         this.setRoles(role)
-        setAuthorization({token: loginRes.data.token, expireAt: new Date(loginRes.data.expireAt)})
-        // 获取路由配置
+        console.log(loginRes)
+        setAuthorization({token: token.token,refreshToken:token.refreshToken})
 
         this.$router.push('/dashboard/workplace')
         this.$message.success(loginRes.msg, 3)
