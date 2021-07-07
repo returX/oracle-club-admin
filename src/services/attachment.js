@@ -40,10 +40,19 @@ attachmentApi.update = (id,params) =>{
     })
 }
 
-attachmentApi.deleteBatch = (data) =>{
+attachmentApi.rollback = (ids) =>{
+    return request({
+        url:ATTACHMENTS,
+        method:METHOD.PUT,
+        data: ids
+    })
+}
+
+attachmentApi.deleteBatch = (data,params) =>{
     return request({
         url: ATTACHMENTS,
         method:METHOD.DELETE,
+        params: params,
         data:data
     })
 }

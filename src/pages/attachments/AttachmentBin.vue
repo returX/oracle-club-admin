@@ -14,30 +14,41 @@
             :bodyStyle="{ padding: '16px' }"
         >
           <a-space>
-            <a-button
-                type="primary"
-                icon="cloud-upload"
-                @click="() => (uploadVisible = true)"
-            >上传</a-button>
+            <a-popconfirm
+                title="确定要清空回收站吗？"
+                ok-text="是"
+                cancel-text="否"
+                @confirm="handleDeleteAttachmentAll"
+            >
+              <a-button
+                  type="danger"
+                  icon="delete"
+              >
+                清空回收站
+              </a-button>
+            </a-popconfirm>
+
             <a-button
                 icon="select"
                 v-show="!supportMultipleSelection"
                 @click="handleMultipleSelection"
             >批量操作</a-button>
-            <a-popconfirm
-                title="确定要删除吗？"
-                ok-text="是"
-                cancel-text="否"
-                @confirm="handleDeleteAttachmentInBatch"
+            <a-button
+                type="danger"
+                icon="delete"
+                @click="handleDeleteAttachmentInBatch"
+                v-show="supportMultipleSelection"
             >
-              <a-button
-                  type="danger"
-                  icon="delete"
-                  v-show="supportMultipleSelection"
-              >
-                删除
-              </a-button>
-            </a-popconfirm>
+              删除
+            </a-button>
+            <a-button
+                type="primary"
+                icon="rollback"
+                @click="handleRollbackAttachment"
+                v-show="supportMultipleSelection"
+            >
+              还原
+            </a-button>
             <a-button
                 icon="close"
                 v-show="supportMultipleSelection"
@@ -45,6 +56,7 @@
             >
               取消
             </a-button>
+
           </a-space>
         </a-card>
       </a-col>
@@ -57,15 +69,14 @@
           <a-list-item slot="renderItem" slot-scope="item">
             <a-card
                 :bodyStyle="{ padding: 0 }"
-                @click="handleShowDetailDrawer(item)"
                 :hoverable="true">
               <div class="thumb">
                 <span v-show="handleShowPreview(item)">该格式不支持预览</span>
                 <img
                     v-show="!handleShowPreview(item)"
                     :src="item.thumbPath"
-                     :alt="item.name"
-                     loading="lazy"
+                    :alt="item.name"
+                    loading="lazy"
                 >
               </div>
               <a-card-meta class="p-3 meta-content">
@@ -98,65 +109,56 @@
           showLessItems
       />
     </div>
-    <a-modal
-        title="上传附件"
-        v-model="uploadVisible"
-        :footer="null"
-        @cancel="handleListAttachments"
-        destroyOnClose
-    >
-      <FileUpload
-          ref="upload"
-          :uploadHandler="uploadHandler"
-      ></FileUpload>
-    </a-modal>
-    <attachment-detail-drawer
-        v-model="drawerVisible"
-        v-if="selectAttachment"
-        :attachment="selectAttachment"
-    />
   </div>
 </template>
 
 <script>
-import AttachmentDetailDrawer from "@/components/drawer/AttachmentDetailDrawer";
-import FileUpload from "@/components/upload/FileUpload";
 import attachmentApi from "@/services/attachment";
-
+//todo 清空回收站
 export default {
-  name: "AttachmentManagement",
-  components: {AttachmentDetailDrawer,FileUpload},
+  name: "AttachmentBin",
   data(){
     return{
       attachments: [],
-      drawerVisible : false,
-      selectAttachment: {},
-      selectedAttachmentCheckbox: {},
-      selectedAttachmentsId: [],
-      supportMultipleSelection : false,
-      uploadVisible: false,
-      uploadHandler: attachmentApi.uploads,
+      listLoading: false,
       pagination: {
         page: 1,
-        size: 18,
+        size: 108,
         sort: null,
         total: 1
       },
       queryParam: {
         page: 0,
-        size: 18,
+        size: 108,
         sort: null,
         name: null,
         suffix: null,
-        deleted: false,
+        deleted: true,
       },
-      listLoading:false
+      selectedAttachmentCheckbox: {},
+      selectedAttachmentsId: [],
+      supportMultipleSelection : false,
     }
   },
   mounted() {
-    this.handleListAttachments()
+    this.handleListAttachmentsDeleted()
   },
   methods:{
+    handleListAttachmentsDeleted(){
+      this.listLoading = true
+      this.queryParam.page = this.pagination.page - 1
+      this.queryParam.size = this.pagination.size
+      this.queryParam.sort = this.pagination.sort
+      attachmentApi.list(this.queryParam)
+          .then(resp=>{
+            this.attachments = resp.data.data.content
+            this.pagination.total = resp.data.data.totalElements
+          }).finally(()=>{
+        setTimeout(()=>{
+          this.listLoading = false
+        },200)
+      })
+    },
     handleShowPreview(attachment){
       const {mediaType} = attachment
       if (mediaType.startsWith('image')){
@@ -164,28 +166,8 @@ export default {
       }
       return true
     },
-    handleListAttachments(){
-      this.listLoading = true
-      this.queryParam.page = this.pagination.page - 1
-      this.queryParam.size = this.pagination.size
-      this.queryParam.sort = this.pagination.sort
-      attachmentApi.list(this.queryParam)
-        .then(resp=>{
-          this.attachments = resp.data.data.content
-          this.pagination.total = resp.data.data.totalElements
-        }).finally(()=>{
-          setTimeout(()=>{
-            this.listLoading = false
-          },200)
-      })
-    },
-    handleShowDetailDrawer(attachment) {
-      this.selectAttachment = attachment
-      if (this.supportMultipleSelection) {
-        this.drawerVisible = false
-      } else {
-        this.drawerVisible = true
-      }
+    getCheckStatus(key) {
+      return this.selectedAttachmentCheckbox[key] || false
     },
     handleAttachmentSelectionChanged(e, item) {
       let isChecked = e.target.checked || false
@@ -199,40 +181,56 @@ export default {
         this.selectedAttachmentsId.splice(index, 1)
       }
     },
-    handleMultipleSelection() {
+    handleMultipleSelection(){
       this.supportMultipleSelection = true
-      // 不允许附件详情抽屉显示
-      this.drawerVisible = false
       this.attachments.forEach(item => {
         this.$set(this.selectedAttachmentCheckbox, item.id, false)
-      })
-    },
-    getCheckStatus(key) {
-      return this.selectedAttachmentCheckbox[key] || false
-    },
-    handleDeleteAttachmentInBatch(){
-      attachmentApi.deleteBatch(this.selectedAttachmentsId).then(resp=>{
-        //todo 删除附件
-        if (resp.data.result === 'ok'){
-          this.handleListAttachments()
-        }else {
-          this.$message.warn("删除附件失败")
-        }
       })
     },
     handleCancelMultipleSelection(){
       this.supportMultipleSelection = false
-      this.drawerVisible = false
       this.selectedAttachmentsId = []
       this.attachments.forEach(item => {
         this.$set(this.selectedAttachmentCheckbox, item.id, false)
+      })
+    },
+    handleDeleteAttachmentInBatch(){
+      attachmentApi.deleteBatch(this.selectedAttachmentsId,{soft:false}).then(resp=>{
+        if (resp.data.result === 'ok'){
+          this.handleListAttachmentsDeleted()
+        }else {
+          this.$message.warn("删除附件失败")
+        }
       })
     },
     handlePaginationChange(page,size){
       console.log(page,size)
       this.pagination.page = page
       this.pagination.size = size
-      this.handleListAttachments()
+      this.handleListAttachmentsDeleted()
+    },
+    handleRollbackAttachment(){
+      attachmentApi.rollback(this.selectedAttachmentsId).then(resp=>{
+        if (resp.data.result === 'ok'){
+          this.handleListAttachmentsDeleted()
+        }else {
+          this.$message.warn("附件恢复失败")
+        }
+      })
+    },
+    handleDeleteAttachmentAll(){
+      const ids = this.attachments.map(item=>item.id)
+      console.log(ids)
+      attachmentApi.deleteBatch(ids,{soft:false})
+          .then(resp=>{
+            console.log(resp)
+            if (resp.data.result === 'ok'){
+              this.$message.info("回收站清空成功")
+            }else{
+              this.$message.warn("回收站清空失败")
+            }
+          this.handleListAttachmentsDeleted()
+      })
     }
   }
 }
@@ -244,18 +242,12 @@ export default {
   height: 48px;
   border-radius: 48px;
 }
-.new-btn{
-  border-radius: 2px;
-  width: 100%;
-  height: 187px;
-}
 .meta-content{
   position: relative;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
 .ant-card-meta{
   padding: 8px 4px;
 }

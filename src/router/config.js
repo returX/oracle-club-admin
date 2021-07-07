@@ -126,19 +126,21 @@ const options = {
         },
         {
           path: 'attachments',
-          name: '附件',
+          name: '附件管理',
           meta: {
             icon: 'file',
           },
           component: PageView,
           children: [
             {
-              path:"",
-              name: '附件管理',
-              meta:{
-                invisible: true
-              },
+              path:"select",
+              name: '全部附件',
               component:() =>import('@/pages/attachments/AttachmentManagement')
+            },
+            {
+              path:"bin",
+              name: '回收站',
+              component:() =>import('@/pages/attachments/AttachmentBin')
             }
           ]
         },
