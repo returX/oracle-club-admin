@@ -1146,6 +1146,13 @@
   resolved "https://registry.npm.taobao.org/@nodelib/fs.stat/download/@nodelib/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha1-K1o6s/kYzKSKjHVMCBaOPwPrphs=
 
+"@packy-tang/vue-tinymce@^1.1.0":
+  version "1.1.2"
+  resolved "https://registry.nlark.com/@packy-tang/vue-tinymce/download/@packy-tang/vue-tinymce-1.1.2.tgz#c1fdce210b2a3dcb0f2b8225055f637acc6d6d53"
+  integrity sha1-wf3OIQsqPcsPK4IlBV9jesxtbVM=
+  dependencies:
+    tinymce "^5.0.6"
+
 "@simonwep/pickr@~1.7.0":
   version "1.7.4"
   resolved "https://registry.npm.taobao.org/@simonwep/pickr/download/@simonwep/pickr-1.7.4.tgz#b14fcd945890388b870cd6db4d6c78d531f25141"
@@ -1179,6 +1186,11 @@
   integrity sha1-sWZeLEYaLNkvTBu/UNVFTeDUtCE=
   dependencies:
     defer-to-connect "^1.0.1"
+
+"@tinymce/tinymce-vue@^4.0.0":
+  version "4.0.4"
+  resolved "https://registry.nlark.com/@tinymce/tinymce-vue/download/@tinymce/tinymce-vue-4.0.4.tgz#b47934f2d1e106ac9af7fa9ba0316a8c96ed314c"
+  integrity sha1-tHk08tHhBqya9/qboDFqjJbtMUw=
 
 "@types/color-name@^1.1.1":
   version "1.1.1"
@@ -6226,6 +6238,11 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
+jwt-decode@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.npm.taobao.org/jwt-decode/download/jwt-decode-3.1.2.tgz#3fb319f3675a2df0c2895c8f5e9fa4b67b04ed59"
+  integrity sha1-P7MZ82daLfDCiVyPXp+ktnsE7Vk=
+
 keyv@^3.0.0:
   version "3.1.0"
   resolved "https://registry.npm.taobao.org/keyv/download/keyv-3.1.0.tgz?cache=0&sync_timestamp=1588662501983&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fkeyv%2Fdownload%2Fkeyv-3.1.0.tgz#ecc228486f69991e49e9476485a5be1e8fc5c4d9"
@@ -9633,6 +9650,11 @@ tinycolor2@^1.4.1:
   resolved "https://registry.npm.taobao.org/tinycolor2/download/tinycolor2-1.4.1.tgz#f4fad333447bc0b07d4dc8e9209d8f39a8ac77e8"
   integrity sha1-9PrTM0R7wLB9TcjpIJ2POaisd+g=
 
+tinymce@^5.0.6, tinymce@^5.6.2:
+  version "5.8.2"
+  resolved "https://registry.nlark.com/tinymce/download/tinymce-5.8.2.tgz#54eb8160b697796c3b52282e648d9d12b1a7399a"
+  integrity sha1-VOuBYLaXeWw7UiguZI2dErGnOZo=
+
 tmp@^0.0.33:
   version "0.0.33"
   resolved "https://registry.npm.taobao.org/tmp/download/tmp-0.0.33.tgz?cache=0&sync_timestamp=1588178571895&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ftmp%2Fdownload%2Ftmp-0.0.33.tgz#6d34335889768d21b2bcda0aa277ced3b1bfadf9"
@@ -10130,6 +10152,13 @@ vue-cli-plugin-style-resources-loader@^0.1.4:
   version "0.1.4"
   resolved "https://registry.npm.taobao.org/vue-cli-plugin-style-resources-loader/download/vue-cli-plugin-style-resources-loader-0.1.4.tgz#6087a86132ea8125aa89e5f8e0a978fbc8cf6f59"
   integrity sha1-YIeoYTLqgSWqieX44Kl4+8jPb1k=
+
+vue-clipboard2@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.npm.taobao.org/vue-clipboard2/download/vue-clipboard2-0.3.1.tgz#6e551fb7bd384889b28b0da3b12289ed6bca4894"
+  integrity sha1-blUft704SImyiw2jsSKJ7WvKSJQ=
+  dependencies:
+    clipboard "^2.0.0"
 
 vue-eslint-parser@^7.0.0:
   version "7.1.0"

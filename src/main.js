@@ -36,9 +36,12 @@ import 'tinymce/plugins/help'
 import './utils/tinymce/plugins/indent2em'
 import './utils/tinymce/plugins/importword'
 import './utils/tinymce/langs/zh_CN.js'
+import VueClipboard from 'vue-clipboard2'
+
 
 Vue.prototype.$tinymce = tinymce
 Vue.use(VueTinymce)
+Vue.use(VueClipboard)
 
 const router = initRouter(store.state.setting.asyncRoutes)
 const i18n = initI18n('CN', 'US')

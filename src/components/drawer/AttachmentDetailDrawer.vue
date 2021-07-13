@@ -87,7 +87,7 @@
             </a-list-item-meta>
           </a-list-item>
           <a-list-item>
-            <a-list-item-meta :description="attachment.path">
+            <a-list-item-meta :description="thumbLink">
               <span slot="title">
                 普通链接：
                 <a
@@ -134,7 +134,9 @@ export default {
     },
   },
   computed:{
-
+    thumbLink(){
+      return `${process.env.VUE_APP_API_BASE_URL}/${this.attachment.path}`
+    }
   },
   methods:{
     onClose(){
@@ -153,7 +155,10 @@ export default {
     },
     //todo 复制链接
     handleCopyNormalLink(){
-
+      this.$copyText(this.thumbLink).then(e=>{
+        this.$message.success("复制到剪切板成功！")
+        console.log(e)
+      })
     }
   }
 }
@@ -163,5 +168,17 @@ export default {
 .attach-detail-img{
   display: flex;
   justify-content: center;
+  width: 100%;
+  height: 28rem;
+  background-color: #e9e9e9;
+  overflow: hidden;
+  cursor: pointer;
+  align-items: center;
+  img{
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+  }
 }
 </style>
