@@ -10,6 +10,23 @@
 
 <script>
 import {METHOD, request} from "@/utils/request";
+import 'tinymce/themes/silver'
+import 'tinymce/icons/default'
+
+import 'tinymce/plugins/image'
+import 'tinymce/plugins/media'
+import 'tinymce/plugins/table'
+import 'tinymce/plugins/lists'
+import 'tinymce/plugins/contextmenu'
+import 'tinymce/plugins/wordcount' //字数统计
+import 'tinymce/plugins/colorpicker' //颜色选择
+import 'tinymce/plugins/textcolor' //文字颜色
+import 'tinymce/plugins/preview' // 点击预览
+import 'tinymce/plugins/textpattern' //快速排版(markdown)
+import 'tinymce/plugins/help'
+import './plugins/indent2em'
+import './plugins/importword'
+import './langs/zh_CN.js'
 
 export default {
   props: {
@@ -87,6 +104,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="less" scoped>
+@import './skins/content/default/content.min.css';
+@import './skins/ui/oxide/skin.min.css';
+@import './skins/ui/oxide/content.min.css';
 </style>

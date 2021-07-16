@@ -1,5 +1,5 @@
 <template>
-  <a-config-provider :locale="locale" :get-popup-container="popContainer">
+  <a-config-provider :get-popup-container="popContainer">
     <router-view/>
   </a-config-provider>
 </template>
@@ -8,18 +8,16 @@
 import {enquireScreen} from './utils/util'
 import {mapState, mapMutations} from 'vuex'
 import themeUtil from '@/utils/themeUtil';
-import {getI18nKey} from '@/utils/routerUtil'
+import {getRouteKey} from '@/utils/routerUtil'
 
 export default {
   name: 'App',
   data() {
     return {
-      locale: {}
     }
   },
   created () {
     this.setHtmlTitle()
-    this.setLanguage(this.lang)
     enquireScreen(isMobile => this.setDevice(isMobile))
   },
   mounted() {
@@ -28,10 +26,6 @@ export default {
   watch: {
     weekMode(val) {
       this.setWeekModeTheme(val)
-    },
-    lang(val) {
-      this.setLanguage(val)
-      this.setHtmlTitle()
     },
     $route() {
       this.setHtmlTitle()
@@ -49,7 +43,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('setting', ['layout', 'theme', 'weekMode', 'lang'])
+    ...mapState('setting', ['layout', 'theme', 'weekMode'])
   },
   methods: {
     ...mapMutations('setting', ['setDevice']),
@@ -60,25 +54,11 @@ export default {
         document.body.classList.remove('week-mode')
       }
     },
-    setLanguage(lang) {
-      this.$i18n.locale = lang
-      switch (lang) {
-        case 'CN':
-          this.locale = require('ant-design-vue/es/locale-provider/zh_CN').default
-          break
-        case 'HK':
-          this.locale = require('ant-design-vue/es/locale-provider/zh_TW').default
-          break
-        case 'US':
-        default:
-          this.locale = require('ant-design-vue/es/locale-provider/en_US').default
-          break
-      }
-    },
     setHtmlTitle() {
       const route = this.$route
-      const key = route.path === '/' ? 'home.name' : getI18nKey(route.matched[route.matched.length - 1].path)
-      document.title = process.env.VUE_APP_NAME + ' | ' + this.$t(key)
+      const key = route.path === '/' ? 'home.name' : getRouteKey(route.matched[route.matched.length - 1].path)
+      // todo k
+      document.title = process.env.VUE_APP_NAME + ' | ' + key
     },
     popContainer() {
       return document.getElementById("popContainer")

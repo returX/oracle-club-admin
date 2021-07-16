@@ -214,7 +214,7 @@ export default {
         if (resp.data.result === 'ok'){
           this.handleListAttachmentsDeleted()
         }else {
-          this.$message.warn("附件恢复失败")
+          this.$message.warn(resp.data.msg)
         }
       })
     },
@@ -227,7 +227,7 @@ export default {
             if (resp.data.result === 'ok'){
               this.$message.info("回收站清空成功")
             }else{
-              this.$message.warn("回收站清空失败")
+              this.$message.warn(resp.data.msg)
             }
           this.handleListAttachmentsDeleted()
       })

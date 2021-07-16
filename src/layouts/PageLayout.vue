@@ -22,7 +22,7 @@
 <script>
 import PageHeader from '@/components/page/header/PageHeader'
 import {mapState, mapMutations} from 'vuex'
-import {getI18nKey} from '@/utils/routerUtil'
+import {getRouteKey} from "@/utils/routerUtil";
 
 export default {
   name: 'PageLayout',
@@ -63,21 +63,21 @@ export default {
     ...mapState('setting', ['layout', 'multiPage', 'pageMinHeight', 'pageWidth', 'customTitles']),
     pageTitle() {
       let pageTitle = this.page && this.page.title
-      return this.customTitle || (pageTitle && this.$t(pageTitle)) || this.title || this.routeName
+      return this.customTitle || pageTitle && getRouteKey(pageTitle) || this.title || this.routeName
     },
     routeName() {
       const route = this.$route
-      return this.$t(getI18nKey(route.matched[route.matched.length - 1].path))
+      return route.matched[route.matched.length - 1].name
     },
     breadcrumb() {
       let page = this.page
       let breadcrumb = page && page.breadcrumb
       if (breadcrumb) {
-        let i18nBreadcrumb = []
-        breadcrumb.forEach(item => {
-          i18nBreadcrumb.push(this.$t(item))
+        let breadcrumb1 = []
+        breadcrumb1.forEach(item => {
+          breadcrumb1.push(item)
         })
-        return i18nBreadcrumb
+        return breadcrumb1
       } else {
         return this.getRouteBreadcrumb()
       }
@@ -92,8 +92,8 @@ export default {
       let routes = this.$route.matched
       let breadcrumb = []
       routes.forEach(route => {
-        const path = route.path.length === 0 ? '/home' : route.path
-        breadcrumb.push(this.$t(getI18nKey(path)))
+        const name = route.name === null ? '首页' : route.name
+        breadcrumb.push(name)
       })
       let pageTitle = this.page && this.page.title
       if (this.customTitle || pageTitle) {

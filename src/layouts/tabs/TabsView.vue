@@ -26,13 +26,11 @@ import AdminLayout from '@/layouts/AdminLayout'
 import Contextmenu from '@/components/menu/Contextmenu'
 import PageToggleTransition from '@/components/transition/PageToggleTransition'
 import {mapState, mapMutations} from 'vuex'
-import {getI18nKey} from '@/utils/routerUtil'
 import AKeepAlive from '@/components/cache/AKeepAlive'
 import TabsHead from '@/layouts/tabs/TabsHead'
 
 export default {
   name: 'TabsView',
-  i18n: require('./i18n'),
   components: {TabsHead, PageToggleTransition, Contextmenu, AdminLayout , AKeepAlive },
   data () {
     return {
@@ -48,10 +46,10 @@ export default {
     ...mapState('setting', ['multiPage', 'cachePage', 'animate', 'layout', 'pageWidth']),
     menuItemList() {
       return [
-        { key: '1', icon: 'vertical-right', text: this.$t('closeLeft') },
-        { key: '2', icon: 'vertical-left', text: this.$t('closeRight') },
-        { key: '3', icon: 'close', text: this.$t('closeOthers') },
-        { key: '4', icon: 'sync', text: this.$t('refresh') },
+        { key: '1', icon: 'vertical-right', text: '关闭左侧' },
+        { key: '2', icon: 'vertical-left', text: '关闭右侧' },
+        { key: '3', icon: 'close', text: '关闭其它' },
+        { key: '4', icon: 'sync', text: '刷新页面'},
       ]
     },
     tabsOffset() {
@@ -117,7 +115,7 @@ export default {
     },
     remove (key, next) {
       if (this.pageList.length === 1) {
-        return this.$message.warning(this.$t('warn'))
+        return this.$message.warning('这是最后一页，不能再关闭了')
       }
       //清除缓存
       let index = this.pageList.findIndex(item => item.fullPath === key)
@@ -209,7 +207,8 @@ export default {
       }, 200)
     },
     pageName(page) {
-      return this.$t(getI18nKey(page.keyPath))
+      // todo 111
+      return page.keyPath
     },
     /**
      * 添加监听器
@@ -253,6 +252,7 @@ export default {
     },
     createPage(route) {
       return {
+        name: route.name,
         keyPath: route.matched[route.matched.length - 1].path,
         fullPath: route.fullPath, loading: false,
         title: route.meta && route.meta.page && route.meta.page.title,

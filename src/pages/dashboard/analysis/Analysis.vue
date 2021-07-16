@@ -2,32 +2,32 @@
   <div class="analysis">
     <a-row style="margin-top: 0" :gutter="[24, 24]">
       <a-col :sm="24" :md="12" :xl="6">
-        <chart-card :loading="loading" :title="$t('users')" total="189,345">
-          <a-tooltip :title="$t('introduce')" slot="action">
+        <chart-card :loading="loading" title="用户总数" total="189,345">
+          <a-tooltip title="指标说明" slot="action">
             <a-icon type="info-circle-o" />
           </a-tooltip>
-          <div>{{$t('users')}}</div>
+          <div>用户总数</div>
         </chart-card>
       </a-col>
       <a-col :sm="24" :md="12" :xl="6">
-        <chart-card :loading="loading" :title="$t('visits')" total="189,345">
-          <a-tooltip :title="$t('introduce')" slot="action">
+        <chart-card :loading="loading" title="访问量" total="189,345">
+          <a-tooltip title="指标说明" slot="action">
             <a-icon type="info-circle-o" />
           </a-tooltip>
-          <div>{{$ta('daily|visits', 'p')}}<span>123,4</span></div>
+          <div>日均访问量<span>123,4</span></div>
         </chart-card>
       </a-col>
       <a-col :sm="24" :md="12" :xl="6">
-        <chart-card :loading="loading" :title="$t('notice')" total="189,345">
-          <a-tooltip :title="$t('introduce')" slot="action">
+        <chart-card :loading="loading" title="公告数" total="189,345">
+          <a-tooltip title="指标说明" slot="action">
             <a-icon type="info-circle-o" />
           </a-tooltip>
-          <div>{{$t('conversion')}} <span>60%</span></div>
+          <div>转化率 <span>60%</span></div>
         </chart-card>
       </a-col>
       <a-col :sm="24" :md="12" :xl="6">
-        <chart-card :loading="loading" :title="$t('operating')" total="73%">
-          <a-tooltip :title="$t('introduce')" slot="action">
+        <chart-card :loading="loading" title="运营活动效果" total="73%">
+          <a-tooltip title="指标说明" slot="action">
             <a-icon type="info-circle-o" />
           </a-tooltip>
           <div style="white-space: nowrap;overflow: hidden">
@@ -53,7 +53,6 @@ for (let i = 0; i < 8; i++) {
 
 export default {
   name: 'Analysis',
-  i18n: require('./i18n'),
   data () {
     return {
       rankList,

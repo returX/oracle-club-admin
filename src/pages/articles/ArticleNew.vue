@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import TinymceEditor from "@/components/TinymceEditor";
+import TinymceEditor from "@/components/tinymce/TinymceEditor";
 import articleApi from "@/services/artcle";
 import ReactiveButton from "@/components/button/ReactiveButton";
 import ArticleSettingDrawer from "@/components/drawer/ArticleSettingDrawer";
@@ -111,6 +111,6 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 
 </style>

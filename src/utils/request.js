@@ -23,7 +23,7 @@ const METHOD = {
 }
 
 const http = axios.create({
-  timeout: 10000,
+  timeout: 5000,
   baseURL: process.env.VUE_APP_API_BASE_URL,
 })
 
