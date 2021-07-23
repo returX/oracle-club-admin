@@ -7,7 +7,7 @@ const pictureApi = {}
 
 pictureApi.types = ()=>{
     return request({
-        url: PICTURE+'/type',
+        url: `${PICTURE}/type`,
         method:METHOD.GET
     })
 }
@@ -22,7 +22,7 @@ pictureApi.list = (params)=>{
 
 pictureApi.uploads = (formData,handleProgress) => {
     return request({
-        url:PICTURE+'/uploads',
+        url: `${PICTURE}/uploads`,
         method:METHOD.POST,
         onUploadProgress: (progressEvent)=>{
             if (progressEvent.lengthComputable){
@@ -30,6 +30,22 @@ pictureApi.uploads = (formData,handleProgress) => {
             }
         },
         data:formData,
+    })
+}
+
+pictureApi.update = (id,data) => {
+    return request({
+        url: `${PICTURE}/${id}`,
+        method: METHOD.PUT,
+        data: data
+    })
+}
+
+pictureApi.delete = (id,soft = true) =>{
+    return request({
+        url: `${PICTURE}/${id}`,
+        method: METHOD.DELETE,
+        params: {soft}
     })
 }
 

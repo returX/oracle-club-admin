@@ -15,7 +15,7 @@
     <a-button block
               :disabled="fileList.length === 0"
               type="primary"
-              @click="handleUpload">
+              @click="handleUpload(other)">
       {{uploading ? '正在上传...':'开始上传'}}
       <a-progress v-show="uploading"
                   :percent="percent"
@@ -39,6 +39,10 @@ export default {
       type: Function,
       required: true,
     },
+    other: {
+      type: [Object,Array],
+      required: false,
+    }
   },
   methods:{
     beforeUpload(file){
@@ -54,7 +58,7 @@ export default {
       newFileList.splice(index, 1);
       this.fileList = newFileList;
     },
-    handleUpload(){
+    handleUpload(other){
       this.uploading = true
       let formData = new FormData()
       this.fileList.forEach(item=>{
@@ -71,6 +75,7 @@ export default {
               this.percent = 0; // 重新置0
             }
           },
+          other,
       ).then(resp=>{
         console.log("resp",resp)
         if (resp.data.result === "ok"){

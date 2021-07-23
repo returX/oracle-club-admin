@@ -80,8 +80,7 @@
 
           </a-card>
           <a-checkbox
-              class="select-picture-checkbox"
-              :style="getCheckStatus(item.id) ? {border: `2px solid red`} : ''"
+              :class="`select-picture-checkbox ${getCheckStatus(item.id) ? 'checkbox-checked' : ''}`"
               :checked="getCheckStatus(item.id)"
               @click="handleSelectedCheckbox($event,item)"
               v-show="supportMultipleSelection"
@@ -99,9 +98,24 @@
   >
     <FileUpload
         ref="upload"
+        :other="{type:uploadType}"
         :uploadHandler="uploadHandler"
         @change="handleFileChange"
     ></FileUpload>
+    <a-row type="flex" align="middle" :style="{marginTop:'.5rem'}">
+      <a-col :style="{marginRight:'.5rem'}">
+        图片类型:
+      </a-col>
+      <a-col flex="auto">
+        <a-select v-model="uploadType"
+                  :style="{width:'100%'}"
+                  :filterOption="false"
+                  mode="combobox"
+        >
+          <a-select-option v-for="(type,index) in types" :key="index" :value="type">{{ type }}</a-select-option>
+        </a-select>
+      </a-col>
+    </a-row>
   </a-modal>
 </div>
 </template>
@@ -115,7 +129,9 @@ import _ from 'lodash';
 
 export default {
   name: "ImageWallManagement",
-  components:{FileUpload},
+  components:{
+    FileUpload
+  },
   data(){
     return{
       pictures: [],
@@ -125,6 +141,7 @@ export default {
       supportMultipleSelection: false,
       uploadHandler: pictureApi.uploads,
       selectedCheckbox:{},
+      uploadType: "default",
       pagination: {
         page: 1,
         size: 18,
@@ -207,7 +224,7 @@ export default {
         this.$message.warn("请选择图片格式!")
         this.$refs.upload.handleRemoveFile(file)
       }
-    }
+    },
   }
 }
 </script>
@@ -223,10 +240,12 @@ export default {
     bottom: 0;
     left: 0;
     z-index: 10;
-
     .ant-checkbox {
       margin-left: 4px;
     }
+  }
+  .checkbox-checked{
+    border: 2px solid @primary-color;
   }
 }
 </style>

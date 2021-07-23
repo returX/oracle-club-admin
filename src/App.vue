@@ -8,7 +8,6 @@
 import {enquireScreen} from './utils/util'
 import {mapState, mapMutations} from 'vuex'
 import themeUtil from '@/utils/themeUtil';
-import {getRouteKey} from '@/utils/routerUtil'
 
 export default {
   name: 'App',
@@ -56,7 +55,7 @@ export default {
     },
     setHtmlTitle() {
       const route = this.$route
-      const key = route.path === '/' ? 'home.name' : getRouteKey(route.matched[route.matched.length - 1].path)
+      const key = route.path === '/' ? '首页' : route.matched[route.matched.length - 1].name
       // todo k
       document.title = process.env.VUE_APP_NAME + ' | ' + key
     },

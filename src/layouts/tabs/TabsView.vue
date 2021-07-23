@@ -206,10 +206,6 @@ export default {
         })
       }, 200)
     },
-    pageName(page) {
-      // todo 111
-      return page.keyPath
-    },
     /**
      * 添加监听器
      */
