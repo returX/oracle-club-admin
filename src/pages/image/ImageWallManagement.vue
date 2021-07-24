@@ -28,6 +28,7 @@
               title="确定要删除吗？"
               ok-text="是"
               cancel-text="否"
+              :disabled="selectedPicturesId.length === 0"
               @confirm="handleDeletePictureInBatch"
           >
             <a-button
@@ -189,10 +190,11 @@ export default {
       })
     },
     handleDeletePictureInBatch(){
-      pictureApi.deleteBatch(this.selectedPictures).then(resp=>{
+      pictureApi.deleteBatch(this.selectedPicturesId).then(resp=>{
         if (resp.data.result === 'ok'){
           this.$message.success("批量删除图片成功")
         }
+        this.handleListPicture();
       })
     },
     handleMultipleSelection(){
@@ -203,7 +205,6 @@ export default {
     },
     handleCancelMultipleSelection(){
       this.selectedCheckbox = {}
-      this.selectedPicturesId = []
       this.supportMultipleSelection = false
     },
     handleSelectedCheckbox(e,item){

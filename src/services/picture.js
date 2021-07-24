@@ -20,16 +20,17 @@ pictureApi.list = (params)=>{
     })
 }
 
-pictureApi.uploads = (formData,handleProgress) => {
+pictureApi.uploads = (formData,handleProgress,other) => {
     return request({
         url: `${PICTURE}/uploads`,
-        method:METHOD.POST,
+        method: METHOD.POST,
         onUploadProgress: (progressEvent)=>{
             if (progressEvent.lengthComputable){
                 handleProgress && handleProgress(progressEvent)
             }
         },
-        data:formData,
+        data: formData,
+        params: other
     })
 }
 
@@ -37,7 +38,7 @@ pictureApi.update = (id,data) => {
     return request({
         url: `${PICTURE}/${id}`,
         method: METHOD.PUT,
-        data: data
+        data: data,
     })
 }
 
@@ -49,6 +50,14 @@ pictureApi.delete = (id,soft = true) =>{
     })
 }
 
+pictureApi.deleteBatch = (ids,soft = true) =>{
+    return request({
+        url: PICTURE,
+        method: METHOD.DELETE,
+        data: ids,
+        params: soft
+    })
+}
 
 
 export default pictureApi
