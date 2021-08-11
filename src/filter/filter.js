@@ -81,3 +81,13 @@ Vue.filter('articleStatusCN',function (data){
     }
     return articleStatus2Ch[data]
 })
+
+Vue.filter('urlNormalize',function (data){
+    if (!data){
+        return require('@/assets/img/placeholder.jpg')
+    }
+    if (data.startsWith('http')){
+        return data
+    }
+    return `/${data}`
+})

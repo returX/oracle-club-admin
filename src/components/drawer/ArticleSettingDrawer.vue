@@ -41,7 +41,7 @@
         <h3>封面图</h3>
         <div>
           <div class="article-thumb">
-            <img :src="selectArticle.coverImage || require('@/assets/img/placeholder.jpg')"
+            <img :src="selectArticle.coverImage | urlNormalize"
               @click="imageDrawerVisible = true"
             />
             <a-form layout="vertical">

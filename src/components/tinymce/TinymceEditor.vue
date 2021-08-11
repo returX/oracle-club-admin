@@ -9,10 +9,10 @@
 </template>
 
 <script>
-import {METHOD, request} from "@/utils/request";
 import 'tinymce/themes/silver'
 import 'tinymce/icons/default'
 
+import 'tinymce/plugins/imagetools'
 import 'tinymce/plugins/image'
 import 'tinymce/plugins/media'
 import 'tinymce/plugins/table'
@@ -27,6 +27,7 @@ import 'tinymce/plugins/help'
 import './plugins/indent2em'
 import './plugins/importword'
 import './langs/zh_CN.js'
+import attachmentApi from "@/services/attachment";
 
 export default {
   props: {
@@ -35,7 +36,7 @@ export default {
     },
     plugins: {
       type: [String, Array],
-      default: 'lists image media table textcolor ' +
+      default: 'lists image imagetools media table textcolor ' +
           'wordcount contextmenu wordcount preview textpattern indent2em importword help'
     },
     toolbar: {
@@ -68,12 +69,16 @@ export default {
         file_picker_types: 'image',
         plugins: this.plugins,
         toolbar: this.toolbar,
-        images_upload_handler: (blobInfo, success) => {
+        images_upload_handler: (blobInfo, success,failure) => {
           let formdata = new FormData()
           formdata.append("file",blobInfo.blob(),blobInfo.filename())
-          request("http://localhost:8081/api/admin/attachments/upload", METHOD.POST,formdata).then(function (res){
-            console.log(res)
-            success("http://localhost:8081/"+res.data.data.path)
+          attachmentApi.upload(formdata).then(({data})=>{
+            if (data.result === 'ok'){
+              this.$emit("image-upload",data.data)
+              success(process.env.VUE_APP_API_BASE_URL+"/"+data.data.path)
+            }else {
+              failure(data.msg)
+            }
           })
         }
       }

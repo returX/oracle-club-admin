@@ -15,11 +15,11 @@
         <div class="attach-detail-img">
           <div v-show="nonsupportPreviewVisible">此文件不支持预览</div>
           <a
-              :href="attachment.path"
+              :href="attachment.path | urlNormalize"
               target="_blank"
           >
             <img
-                :src="attachment.path"
+                :src="attachment.path | urlNormalize"
                 v-show="photoPreviewVisible"
                 class="w-full"
                 loading="lazy"

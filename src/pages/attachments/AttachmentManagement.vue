@@ -63,7 +63,7 @@
                 <span v-show="handleShowPreview(item)">该格式不支持预览</span>
                 <img
                     v-show="!handleShowPreview(item)"
-                    :src="item.thumbPath"
+                    :src="item.thumbPath | urlNormalize"
                      :alt="item.name"
                      loading="lazy"
                 >

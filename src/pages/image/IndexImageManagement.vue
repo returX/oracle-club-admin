@@ -3,7 +3,7 @@
   <a-button type="primary"  @click="imageDrawerVisible = true">添加</a-button>
   <a-carousel arrows dots-class="slick-dots slick-thumb">
     <a slot="customPaging" slot-scope="props">
-      <img :src="pictures[props.i].thumbPath" />
+      <img :src="pictures[props.i].thumbPath | urlNormalize" />
     </a>
     <div class="image-wrap" :style="{
       backgroundImage: `url('${getImgUrl(item.path)}')`
@@ -51,7 +51,6 @@ export default {
       })
     },
     getImgUrl(i) {
-      console.log(i)
       return `${process.env.VUE_APP_API_BASE_URL}/${i}`;
     },
     handleSelectImage(item){

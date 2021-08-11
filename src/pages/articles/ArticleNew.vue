@@ -7,7 +7,7 @@
       <a-col>
         <a-button-group>
           <a-button type="primary"
-                    @click="articleSettingVisible = true">发布文章</a-button>
+                    @click="handlePrePublishArticle">发布文章</a-button>
           <ReactiveButton
               type="danger"
               text="保存草稿"
@@ -25,6 +25,7 @@
         ref="editor"
         :content="articleDetail.content"
         @contentChange="handleContentChange"
+        @image-upload="handleImageUpload"
     >
     </tinymce-editor>
     <article-setting-drawer
@@ -50,6 +51,7 @@ function getText(html){
   })
   return content
 }
+const imgUrlReg = /<img.*?src="(.*?)".*?>/g
 
 export default {
   name: "ArticleNew",
@@ -105,7 +107,22 @@ export default {
           }
         }).finally(()=>setTimeout(()=>this.draftSaving = false,1000))
       }
-
+    },
+    /**
+     * 监听图片上传事件
+     */
+    handleImageUpload(image){
+      if (image.path){
+        this.articleDetail.coverImage = image.path
+      }
+    },
+    /**
+     * 准备发布文章，打开设置抽屉
+     */
+    handlePrePublishArticle(){
+      const result = imgUrlReg.exec(this.articleDetail.content)
+      this.articleDetail.coverImage = result[1]
+      this.articleSettingVisible = true
     }
   }
 }

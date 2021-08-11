@@ -68,7 +68,7 @@
               :bodyStyle="{ padding: 0 }"
               :hoverable="true">
             <div class="thumb">
-              <img :src="item.thumbPath"
+              <img :src="item.thumbPath | urlNormalize"
                    :alt="item.name"
                    loading="lazy"
               >
