@@ -191,37 +191,45 @@ const columns = [
   {
     title: '标题',
     dataIndex: 'title',
+    ellipsis: true,
+    width: 400
   },
   {
     title: '作者',
     dataIndex: 'author',
+    width: 200
   },
   {
     title: '浏览次数',
     dataIndex: 'viewCount',
     sorter: (a,b)=>a.viewCount - b.viewCount,
     scopedSlots: { customRender: 'viewCount' },
+    width: 150
   },
   {
     title: '点赞次数',
     dataIndex: 'likeCount',
     sorter: (a,b)=>a.likeCount - b.likeCount,
     scopedSlots: { customRender: 'likeCount' },
+    width: 150
   },
   {
     title: '状态',
     dataIndex: 'status',
     scopedSlots: { customRender: 'status' },
+    width: 100
   },
   {
     title: '创建时间',
     dataIndex: 'createdAt',
     sorter: (a,b)=> a.createdAt - b.createdAt,
     scopedSlots: { customRender: 'createdAt' },
+    width: 250
   },
   {
     title: '操作',
-    scopedSlots: { customRender: 'action' }
+    scopedSlots: { customRender: 'action' },
+    width: 200
   }
 ]
 
@@ -354,12 +362,12 @@ export default {
     handleListArticle(){
       this.loading = true
       this.queryParams.size = this.pagination.size
-      this.queryParams.page = this.pagination.page - 1
+      this.queryParams.page = this.pagination.page
       articleApi.list(this.queryParams).then(resp=>{
         if (resp.data.result === "ok"){
           const {data} = resp.data
-          this.dataSource = data.content
-          this.pagination.total = data.totalElements
+          this.dataSource = data.records
+          this.pagination.total = data.total
         }
         this.loading = false
       })

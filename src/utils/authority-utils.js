@@ -11,6 +11,7 @@ function hasPermission(authority, permissions) {
   } else if (typeof authority === 'object') {
     required = authority.permission
   }
+  //当权限为*或用户权限存在与路由权限相同 (默认权限是*，即任意用户可以访问该路由)
   return required === '*' || (permissions && permissions.findIndex(item => item === required || item.id === required) !== -1)
 }
 
@@ -24,6 +25,7 @@ function hasRole(authority, roles) {
   if (typeof authority === 'object') {
     required = authority.role
   }
+  //当角色要求是*或者用户角色与路由所需角色相同
   return authority === '*' || hasAnyRole(required, roles)
 }
 
@@ -36,6 +38,7 @@ function hasRole(authority, roles) {
 function hasAnyRole(required, roles) {
   if (!required) {
     return false
+    //需要多个角色
   } else if(Array.isArray(required)) {
     return roles.findIndex(role => {
       return required.findIndex(item => item === role || item === role.id) !== -1
@@ -70,11 +73,13 @@ function hasAuthority(route, permissions, roles) {
  */
 function filterMenu(menuData, permissions, roles) {
   return menuData.filter(menu => {
+    // 如果路由meta存在且invisible不存在 那么进行权限校验
     if (menu.meta && menu.meta.invisible === undefined) {
       if (!hasAuthority(menu, permissions, roles)) {
         return false
       }
     }
+    // 递归子菜单过滤
     if (menu.children && menu.children.length > 0) {
       menu.children = filterMenu(menu.children, permissions, roles)
     }

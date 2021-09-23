@@ -7,7 +7,8 @@ export const userStatus = {
 export const userRole = {
     VISITOR:"VISITOR",
     NORMAL:"NORMAL",
-    ADMIN:"ADMIN"
+    ADMIN:"ADMIN",
+    SUPER_ADMIN:"SUPER_ADMIN"
 }
 
 export const articleStatus = {

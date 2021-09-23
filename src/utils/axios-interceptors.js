@@ -99,6 +99,32 @@ const resp403 = {
   }
 }
 
+// const respCommon = {
+//   /**
+//    * 响应成功
+//    * @param response 响应对象
+//    * @param options 应用配置 包含: {router, store, message}
+//    * @returns {*}
+//    */
+//   onFulfilled(response, options) {
+//     return response
+//   },
+//   /**
+//    * 响应出错时执行
+//    * @param error 错误对象
+//    * @param options 应用配置 包含: {router, store, message}
+//    * @returns {Promise<never>}
+//    */
+//   onRejected(error, options) {
+//     const {message} = options
+//     const {response} = error
+//     if (!response){
+//       message.warn("")
+//     }
+//     return Promise.reject(error)
+//   }
+// }
+
 const reqCommon = {
   /**
    * 发送请求之前做些什么
@@ -109,7 +135,7 @@ const reqCommon = {
   onFulfilled(config, options) {
     const {message} = options
     const {url, xsrfHeaderName} = config
-    console.log(config)
+
     if (url.indexOf('login') === -1 && xsrfHeaderName && !localStorage.getItem(xsrfHeaderName)) {
       message.warning('认证 token 已过期，请重新登录')
     }

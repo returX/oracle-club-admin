@@ -52,10 +52,6 @@ const columns = [
     sorter:(a,b) => a-b
   },
   {
-    title: '部门名',
-    dataIndex: 'department.name',
-  },
-  {
     title: '邮箱',
     dataIndex: 'email',
   },
@@ -108,12 +104,13 @@ export default {
   methods: {
     handleListUser(){
       this.queryParams.size = this.pagination.size
-      this.queryParams.page = this.pagination.page - 1
+      this.queryParams.page = this.pagination.page
       this.loading = true
       userApi.list(this.queryParams).then(resp=>{
         console.log(resp)
-        this.dataSource = resp.data.data.content
-        this.pagination.total = resp.data.data.totalElements
+        const records = resp.data.data.records
+        this.dataSource = records.map(record => this._.omit(record,"department"))
+        this.pagination.total = resp.data.data.total
         this.loading = false
       })
     },

@@ -43,13 +43,13 @@ Vue.filter('statusBadge',function (data){
     return status2Badge[data]
 })
 
-const role2Color = _.zipObject(Object.values(userRole),["#26C6DA", "#4CAF50", "#263238"])
+const role2Color = _.zipObject(Object.values(userRole),["#26C6DA", "#4CAF50", "#263238", "#4452EC"])
 
 Vue.filter('roleColor',function (data){
     return role2Color[data]
 })
 
-const role2CN = _.zipObject(Object.values(userRole),["游客", "内部成员", "管理员"])
+const role2CN = _.zipObject(Object.values(userRole),["游客", "内部成员", "管理员", "超级管理员"])
 
 Vue.filter('roleFormat',function (data){
     let keys = Object.keys(role2CN)

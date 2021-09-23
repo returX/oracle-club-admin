@@ -188,16 +188,21 @@ function formatAuthority(routes, pAuthorities = []) {
     const defaultAuthority = pAuthorities[pAuthorities.length - 1] || {permission: '*'}
     if (meta) {
       let authority = {}
+      //如果route没有authority字段，使用默认配置
       if (!meta.authority) {
         authority = defaultAuthority
+      //如果route的authority字段为字符串，将字符串视为permission
       }else if (typeof meta.authority === 'string') {
         authority.permission = meta.authority
+      //如果route的authority字段是对象，将其赋值给authority
       } else if (typeof meta.authority === 'object') {
         authority = meta.authority
         const {role} = authority
+        //如果route的authority的role是字符串
         if (typeof role === 'string') {
           authority.role = [role]
         }
+        //如果route的authority不含有permission和role，使用默认Authority
         if (!authority.permission && !authority.role) {
           authority = defaultAuthority
         }

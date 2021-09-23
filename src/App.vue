@@ -20,7 +20,7 @@ export default {
     enquireScreen(isMobile => this.setDevice(isMobile))
   },
   mounted() {
-   this.setWeekModeTheme(this.weekMode)
+    this.setWeekModeTheme(this.weekMode)
   },
   watch: {
     weekMode(val) {

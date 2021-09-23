@@ -14,13 +14,14 @@ import '@/filter/filter'
 
 import tinymce from 'tinymce'
 import VueTinymce from '@packy-tang/vue-tinymce'
-
+import _ from "lodash"
 
 
 import VueClipboard from 'vue-clipboard2'
 
 
 Vue.prototype.$tinymce = tinymce
+Vue.prototype._ = _
 Vue.use(VueTinymce)
 Vue.use(VueClipboard)
 

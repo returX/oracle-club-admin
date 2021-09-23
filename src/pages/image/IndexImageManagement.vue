@@ -46,7 +46,7 @@ export default {
       }).then(resp=>{
         console.log(resp)
         if (resp.data.result === 'ok'){
-          this.pictures = resp.data.data.content
+          this.pictures = resp.data.data.records
         }
       })
     },

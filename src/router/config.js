@@ -20,7 +20,10 @@ const options = {
           path: 'dashboard',
           name: 'Dashboard',
           meta: {
-            icon: 'dashboard'
+            icon: 'dashboard',
+            authority:{
+              role: ["SUPER_ADMIN","ADMIN"]
+            }
           },
           component: BlankView,
           children: [
@@ -45,7 +48,10 @@ const options = {
           path: 'articles',
           name: '新闻稿管理',
           meta: {
-            icon: 'read'
+            icon: 'read',
+            authority:{
+              role: ["SUPER_ADMIN","ADMIN"]
+            }
           },
           component: PageView,
           children: [
@@ -70,7 +76,10 @@ const options = {
           path: 'departments',
           name: '部门管理',
           meta: {
-            icon: 'deployment-unit'
+            icon: 'deployment-unit',
+            authority:{
+              role: ["SUPER_ADMIN"]
+            }
           },
           component: PageView,
           children: [
@@ -90,7 +99,10 @@ const options = {
           path: 'user',
           name: '用户管理',
           meta: {
-            icon: 'user'
+            icon: 'user',
+            authority:{
+              role: ["SUPER_ADMIN","ADMIN"]
+            }
           },
           component: PageView,
           children: [
@@ -110,7 +122,10 @@ const options = {
           path: 'logs',
           name: '日志管理',
           meta: {
-            icon: 'database'
+            icon: 'database',
+            authority:{
+              role: ["SUPER_ADMIN"]
+            }
           },
           component: PageView,
           children: [
@@ -129,6 +144,9 @@ const options = {
           name: '附件管理',
           meta: {
             icon: 'file',
+            authority:{
+              role: ["SUPER_ADMIN","ADMIN"]
+            }
           },
           component: PageView,
           children: [
@@ -149,6 +167,9 @@ const options = {
           name: '图片管理',
           meta: {
             icon: 'file-image',
+            authority:{
+              role: ["SUPER_ADMIN","ADMIN"]
+            }
           },
           component: PageView,
           children: [

@@ -256,23 +256,26 @@ const columns = [
     title: '昵称',
     dataIndex: 'nickname',
     ellipsis: true,
-    width: 100,
+    width: 150,
     scopedSlots: { customRender: 'nickname' }
   },
   {
     title: '部门名',
     dataIndex: 'department.name',
+    width: 150,
     scopedSlots: { customRender: 'depName' }
   },
   {
     title: '邮箱',
     dataIndex: 'email',
     ellipsis: true,
+    width: 200,
     scopedSlots: { customRender: 'email' }
   },
   {
     title: '手机号码',
     dataIndex: 'phNum',
+    width: 150,
     scopedSlots: { customRender: 'phNum' }
   },
   {
@@ -445,6 +448,7 @@ export default {
       })
     },
     handleResetForm(){
+      this.dateRange = null
       this.queryParams = {}
       this.handlePaginationChange(1,10)
     },
@@ -455,7 +459,7 @@ export default {
     },
     handleListUser(){
       this.queryParams.size = this.pagination.size
-      this.queryParams.page = this.pagination.page - 1
+      this.queryParams.page = this.pagination.page
       if (this.dateRange){
         this.queryParams.loginStart = new Date(this.dateRange[0]._d).getTime()
         this.queryParams.loginEnd = new Date(this.dateRange[1]._d).getTime()
@@ -463,8 +467,8 @@ export default {
       this.loading = true
       userApi.list(this.queryParams).then(resp=>{
         console.log(resp)
-        this.dataSource = resp.data.data.content
-        this.pagination.total = resp.data.data.totalElements
+        this.dataSource = resp.data.data.records
+        this.pagination.total = resp.data.data.total
         this.loading = false
       })
     }

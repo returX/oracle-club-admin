@@ -103,7 +103,10 @@ export default {
           this.logging = true
           const email = this.form.getFieldValue('email')
           const password = this.form.getFieldValue('password')
-          userApi.login(email, password).then(this.afterLogin)
+          userApi.login(email, password).then(this.afterLogin).catch(()=>{
+            this.$message.warn("登录失败，请重试")
+            this.logging = false
+          })
         }
       })
     },
@@ -113,7 +116,7 @@ export default {
       if (loginRes.result === "ok") {
         const {role,token} = loginRes.data
         this.setUser(loginRes.data)
-        this.setRoles(role)
+        this.setRoles([role])
         console.log(loginRes)
         setAuthorization({token: token.token,refreshToken:token.refreshToken})
 

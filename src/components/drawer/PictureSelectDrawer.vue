@@ -147,14 +147,14 @@ export default {
     },
     handleListPictures() {
       this.listLoading = true
-      this.queryParam.page = this.pagination.page - 1
+      this.queryParam.page = this.pagination.page
       this.queryParam.size = this.pagination.size
       this.queryParam.sort = this.pagination.sort
       pictureApi.list(this.queryParam)
           .then(resp => {
             console.log(resp)
-            this.pictures = resp.data.data.content
-            this.pagination.total = resp.data.data.totalElements
+            this.pictures = resp.data.data.records
+            this.pagination.total = resp.data.data.total
           }).finally(() => {
         setTimeout(() => {
           this.listLoading = false

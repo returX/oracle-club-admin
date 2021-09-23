@@ -143,7 +143,7 @@ export default {
         total: 1
       },
       queryParam: {
-        page: 0,
+        page: 1,
         size: 18,
         sort: null,
         name: null,
@@ -166,13 +166,13 @@ export default {
     },
     handleListAttachments(){
       this.listLoading = true
-      this.queryParam.page = this.pagination.page - 1
+      this.queryParam.page = this.pagination.page
       this.queryParam.size = this.pagination.size
       this.queryParam.sort = this.pagination.sort
       attachmentApi.list(this.queryParam)
         .then(resp=>{
-          this.attachments = resp.data.data.content
-          this.pagination.total = resp.data.data.totalElements
+          this.attachments = resp.data.data.records
+          this.pagination.total = resp.data.data.total
         }).finally(()=>{
           setTimeout(()=>{
             this.listLoading = false

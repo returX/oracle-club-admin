@@ -90,6 +90,19 @@
       </a-list>
     </a-col>
   </a-row>
+  <div class="page-wrapper">
+    <a-pagination
+        class="pagination"
+        :current="pagination.page"
+        :total="pagination.total"
+        :defaultPageSize="pagination.size"
+        :pageSizeOptions="['18', '36', '54', '72', '90', '108']"
+        showSizeChanger
+        @change="handlePaginationChange"
+        @showSizeChange="handlePaginationChange"
+        showLessItems
+    />
+  </div>
   <a-modal
       title="上传图片"
       v-model="uploadVisible"
@@ -174,9 +187,13 @@ export default {
   methods:{
     handleListPicture(){
       this.listLoading = true
+      this.queryParam.page = this.pagination.page
+      this.queryParam.size = this.pagination.size
+      this.queryParam.sort = this.pagination.sort
       pictureApi.list(this.queryParam).then(resp=>{
         if (resp.data.result === 'ok'){
-          this.pictures = resp.data.data.content
+          this.pictures = resp.data.data.records
+          this.pagination.total = resp.data.data.total
         }
       }).finally(()=>{
         this.listLoading = false
@@ -188,6 +205,11 @@ export default {
           this.types = resp.data.data
         }
       })
+    },
+    handlePaginationChange(page,size){
+      this.pagination.page = page
+      this.pagination.size = size
+      this.handleListPicture()
     },
     handleDeletePictureInBatch(){
       pictureApi.deleteBatch(this.selectedPicturesId).then(resp=>{
@@ -247,6 +269,9 @@ export default {
   }
   .checkbox-checked{
     border: 2px solid @primary-color;
+  }
+  .page-wrapper{
+    float: right;
   }
 }
 </style>
