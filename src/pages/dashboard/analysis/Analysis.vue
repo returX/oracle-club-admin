@@ -2,31 +2,31 @@
   <div class="analysis">
     <a-row style="margin-top: 0" :gutter="[24, 24]">
       <a-col :sm="24" :md="12" :xl="6">
-        <chart-card :loading="loading" title="用户总数" total="189,345">
+        <chart-card :loading="loading" title="用户总数" :total="statistic.userCount">
           <a-tooltip title="指标说明" slot="action">
             <a-icon type="info-circle-o" />
           </a-tooltip>
-          <div>用户总数</div>
+<!--          <div>用户总数</div>-->
         </chart-card>
       </a-col>
       <a-col :sm="24" :md="12" :xl="6">
-        <chart-card :loading="loading" title="访问量" total="189,345">
+        <chart-card :loading="loading" title="访问量" :total="statistic.viewCount">
           <a-tooltip title="指标说明" slot="action">
             <a-icon type="info-circle-o" />
           </a-tooltip>
-          <div>日均访问量<span>123,4</span></div>
+<!--          <div>日均访问量<span>123,4</span></div>-->
         </chart-card>
       </a-col>
       <a-col :sm="24" :md="12" :xl="6">
-        <chart-card :loading="loading" title="公告数" total="189,345">
+        <chart-card :loading="loading" title="公告数" :total="statistic.articleCount">
           <a-tooltip title="指标说明" slot="action">
             <a-icon type="info-circle-o" />
           </a-tooltip>
-          <div>转化率 <span>60%</span></div>
+<!--          <div>转化率 <span>60%</span></div>-->
         </chart-card>
       </a-col>
       <a-col :sm="24" :md="12" :xl="6">
-        <chart-card :loading="loading" title="运营活动效果" total="73%">
+        <chart-card :loading="loading" title="上次更新时间" :total="statistic.now | moment">
           <a-tooltip title="指标说明" slot="action">
             <a-icon type="info-circle-o" />
           </a-tooltip>
@@ -41,28 +41,32 @@
 
 <script>
 import ChartCard from '../../../components/card/ChartCard'
-
-const rankList = []
-
-for (let i = 0; i < 8; i++) {
-  rankList.push({
-    name: '桃源村' + i + '号店',
-    total: 1234.56 - i * 100
-  })
-}
+import statisticApi from "@/services/statistic";
 
 export default {
   name: 'Analysis',
   data () {
     return {
-      rankList,
+      statistic: {},
       loading: true
     }
   },
   created() {
     setTimeout(() => this.loading = !this.loading, 1000)
   },
-  components: {ChartCard}
+  components: {ChartCard},
+  mounted() {
+    this.handleGetStatistic()
+  },
+  methods:{
+    handleGetStatistic(){
+      statisticApi.getStatisticAll().then(({data})=>{
+          if (data.result === "ok"){
+            this.statistic = data.data
+          }
+      })
+    }
+  }
 }
 </script>
 

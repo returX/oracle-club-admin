@@ -16,10 +16,16 @@
           <a-card :loading="loading" title="日志" :bordered="false">
             <a slot="extra" @click="toLog">全部日志</a>
             <a-list>
-              <a-list-item :key="index" v-for="(item, index) in activities">
+              <a-list-item :key="index" v-for="(item, index) in logs">
                 <a-list-item-meta>
-                  <div slot="title" v-html="item.template" />
-                  <div slot="description">9小时前</div>
+                  <div slot="title">
+                    {{item.content}}
+                    <span style="float:right">{{item.name}}</span>
+                  </div>
+                  <div slot="description">
+                    {{item.createdAt | moment}}
+                    <a-tag color="#2db7f5">{{item.type}}</a-tag>
+                  </div>
                 </a-list-item-meta>
               </a-list-item>
             </a-list>
@@ -47,6 +53,7 @@
 import PageLayout from '@/layouts/PageLayout'
 import HeadInfo from '@/components/tool/HeadInfo'
 import {mapState} from 'vuex'
+import logsApi from "@/services/logs";
 
 export default {
   name: 'WorkPlace',
@@ -55,7 +62,7 @@ export default {
     return {
       projects: [],
       loading: true,
-      activities: [],
+      logs: [],
       welcome: {
         timeFix: {
           CN: '早上好',
@@ -74,17 +81,27 @@ export default {
     ...mapState('account', {currUser: 'user'}),
   },
   methods:{
+    handleListTopLog(){
+      this.loading = true
+      logsApi.latest(5).then(({data})=>{
+        if (data.result === "ok"){
+          this.logs = data.data
+        }
+        this.loading = false
+      })
+    },
     toLog(){
       this.$router.push("/logs")
     }
   },
-  created() {
+  mounted() {
     // request.get('/user/welcome').then(res => this.welcome = res.data)
     // request.get('/work/activity').then(res => this.activities = res.data)
     // request.get('/project').then(res => {
     //     this.projects = res.data
     //     this.loading = false
     //   })
+    this.handleListTopLog()
   }
 }
 </script>

@@ -9,7 +9,7 @@
     </div>
     <div class="login">
       <a-form @submit="onSubmit" :form="form">
-        <a-tabs size="large" :tabBarStyle="{textAlign: 'center'}" style="padding: 0 2px;">
+        <a-tabs @change="tab=> activeTab = tab" size="large" :tabBarStyle="{textAlign: 'center'}" style="padding: 0 2px;">
           <a-tab-pane tab="邮箱密码登录" key="1">
             <a-alert type="error" :closable="true" v-show="error" :message="error" showIcon style="margin-bottom: 24px;" />
             <a-form-item>
@@ -34,21 +34,21 @@
               </a-input>
             </a-form-item>
           </a-tab-pane>
-          <a-tab-pane tab="手机号登录" key="2">
+          <a-tab-pane tab="验证码登录" key="2">
             <a-form-item>
-              <a-input size="large" placeholder="mobile number" >
-                <a-icon slot="prefix" type="mobile" />
+              <a-input size="large" placeholder="邮箱" v-model="email">
+                <a-icon slot="prefix" type="mail" />
               </a-input>
             </a-form-item>
             <a-form-item>
               <a-row :gutter="8" style="margin: 0 -4px">
                 <a-col :span="16">
-                  <a-input size="large" placeholder="captcha">
-                    <a-icon slot="prefix" type="mail" />
+                  <a-input size="large" placeholder="验证码" v-model="verifyCode">
+                    <a-icon slot="prefix" type="number" />
                   </a-input>
                 </a-col>
                 <a-col :span="8" style="padding-left: 4px">
-                  <a-button style="width: 100%" class="captcha-button" size="large">获取验证码</a-button>
+                  <a-button style="width: 100%" class="captcha-button" size="large" @click="getVerifyCode">获取验证码</a-button>
                 </a-col>
               </a-row>
             </a-form-item>
@@ -61,13 +61,6 @@
         <a-form-item>
           <a-button :loading="logging" style="width: 100%;margin-top: 24px" size="large" htmlType="submit" type="primary">登录</a-button>
         </a-form-item>
-        <div>
-          其他登录方式
-          <a-icon class="icon" type="alipay-circle" />
-          <a-icon class="icon" type="taobao-circle" />
-          <a-icon class="icon" type="weibo-circle" />
-          <router-link style="float: right" to="/dashboard/workplace" >注册账户</router-link>
-        </div>
       </a-form>
     </div>
   </common-layout>
@@ -86,6 +79,9 @@ export default {
     return {
       logging: false,
       error: '',
+      email: null,
+      verifyCode: null,
+      activeTab: "1",
       form: this.$form.createForm(this)
     }
   },
@@ -98,15 +94,30 @@ export default {
     ...mapMutations('account', ['setUser', 'setPermissions', 'setRoles']),
     onSubmit (e) {
       e.preventDefault()
-      this.form.validateFields((err) => {
-        if (!err) {
-          this.logging = true
-          const email = this.form.getFieldValue('email')
-          const password = this.form.getFieldValue('password')
-          userApi.login(email, password).then(this.afterLogin).catch(()=>{
-            this.$message.warn("登录失败，请重试")
-            this.logging = false
-          })
+      if (this.activeTab === "1"){
+        this.form.validateFields((err) => {
+          if (!err) {
+            this.logging = true
+            const email = this.form.getFieldValue('email')
+            const password = this.form.getFieldValue('password')
+            userApi.loginEmail(email, password).then(this.afterLogin).catch(()=>{
+              this.$message.warn("登录失败，请重试")
+              this.logging = false
+            })
+          }
+        })
+      } else if (this.activeTab === "2"){
+        this.logging = true
+        userApi.loginVerify(this.email, this.verifyCode).then(this.afterLogin).catch(()=>{
+          this.$message.warn("登录失败，请重试")
+          this.logging = false
+        })
+      }
+    },
+    getVerifyCode(){
+      userApi.getVerifyCode(this.email).then(({data})=>{
+        if (data.result === "ok"){
+          this.$message.success(data.msg)
         }
       })
     },

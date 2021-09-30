@@ -1,17 +1,36 @@
-import {EMAIL_LOGIN, USERS} from '@/services/api'
+import {COMMON_USERS, USERS} from '@/services/api'
 import {request, METHOD, removeAuthorization} from '@/utils/request'
 
 
 const userApi = {}
 
-userApi.login = (username, password) => {
+userApi.loginEmail = (username, password) => {
   return request({
-    url:EMAIL_LOGIN,
+    url:`${COMMON_USERS}/login/email`,
     method:METHOD.POST,
     data:{
       username: username,
       password: password
     }
+  })
+}
+
+userApi.loginVerify= (email, verifyCode) => {
+  return request({
+    url:`${COMMON_USERS}/login/verify`,
+    method:METHOD.POST,
+    data:{
+      email: email,
+      verifyCode: verifyCode
+    }
+  })
+}
+
+userApi.getVerifyCode = (email) => {
+  return request({
+    url:`${COMMON_USERS}/verifyCode`,
+    method:METHOD.POST,
+    params: {email}
   })
 }
 
